@@ -1,0 +1,2 @@
+import { BrainCircuit } from 'lucide-react'; import Card from '../components/Card';
+export default function BrainPage(){return <div className="page-heading"><div><p className="eyebrow">PROJECT MEMORY ENGINE</p><h2>Your project’s living context.</h2><p>This interface is ready for GitHub-derived technical, decision, and timeline memory. The memory backend will be added when its source repository is available.</p></div><Card><BrainCircuit size={28}/><h3>Awaiting connected sources</h3><p className="muted">No project data has been imported yet.</p></Card></div>}

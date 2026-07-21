@@ -1,0 +1,2 @@
+import { FileText, ListTodo, Lock } from 'lucide-react'; import Card from '../components/Card';
+export default function DeferredPage({type,description}){const Icon=type==='Tasks'?ListTodo:FileText;return <div className="placeholder"><div className="placeholder-icon"><Icon/></div><p className="eyebrow">PREPARED FOR INTEGRATION</p><h2>{type}</h2><p>{description}</p><Card><Lock size={18}/><div><h3>Waiting for the module backend</h3><p className="muted">The interface and navigation are ready. No simulated data or unsupported actions have been added.</p></div></Card></div>}
