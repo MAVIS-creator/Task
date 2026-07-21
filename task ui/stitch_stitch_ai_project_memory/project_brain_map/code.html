@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Brain | Alpha Visualization</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --primary-glow: rgba(192, 193, 255, 0.15);
+            --secondary-glow: rgba(76, 215, 246, 0.15);
+        }
+        body {
+            background-color: #0d0d15;
+            color: #e4e1ed;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .node-connection {
+            stroke-dasharray: 10;
+            animation: flow 20s linear infinite;
+        }
+        @keyframes flow {
+            from { stroke-dashoffset: 200; }
+            to { stroke-dashoffset: 0; }
+        }
+        .node-pulse {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .shimmer-text {
+            background: linear-gradient(90deg, #c0c1ff, #4cd7f6, #c0c1ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#494bd6",
+                        "background": "#13131b",
+                        "surface-tint": "#c0c1ff",
+                        "on-error": "#690005",
+                        "surface-dim": "#13131b",
+                        "on-tertiary-fixed-variant": "#45464e",
+                        "tertiary": "#c6c6cf",
+                        "on-primary-container": "#0d0096",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0d0d15",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e4e1ed",
+                        "outline-variant": "#464554",
+                        "on-secondary-container": "#00424e",
+                        "tertiary-container": "#909099",
+                        "tertiary-fixed-dim": "#c6c6cf",
+                        "on-primary-fixed": "#07006c",
+                        "inverse-on-surface": "#303038",
+                        "surface-container-high": "#292932",
+                        "error": "#ffb4ab",
+                        "outline": "#908fa0",
+                        "inverse-surface": "#e4e1ed",
+                        "surface-container": "#1f1f27",
+                        "secondary-container": "#03b5d3",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "surface-container-highest": "#34343d",
+                        "on-primary": "#1000a9",
+                        "surface-bright": "#393841",
+                        "on-secondary": "#003640",
+                        "on-tertiary-container": "#282930",
+                        "tertiary-fixed": "#e2e1eb",
+                        "surface-container-low": "#1b1b23",
+                        "on-surface-variant": "#c7c4d7",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-container": "#8083ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "surface-variant": "#34343d",
+                        "secondary": "#4cd7f6",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "secondary-fixed": "#acedff",
+                        "surface": "#13131b",
+                        "on-surface": "#e4e1ed",
+                        "primary": "#c0c1ff",
+                        "on-tertiary": "#2f3037",
+                        "on-secondary-fixed": "#001f26",
+                        "on-tertiary-fixed": "#1a1b22"
+                    },
+                    "borderRadius": { "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem" },
+                    "spacing": { "lg": "40px", "md": "24px", "sm": "16px", "xl": "64px" },
+                    "fontFamily": {
+                        "display": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "code-md": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 dark:border-white/5 shadow-[0_0_40px_rgba(73,75,214,0.15)]">
+<div class="flex items-center gap-md">
+<div class="style_brand_logo font-display text-headline-md font-bold tracking-tight text-primary dark:text-primary-fixed">Project Brain</div>
+<nav class="hidden md:flex gap-md ml-xl">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Overview</a>
+<a class="text-on-surface-variant font-medium hover:bg-white/5 transition-all duration-200 px-2 font-body-md text-body-md" href="#">Timeline</a>
+<a class="text-on-surface-variant font-medium hover:bg-white/5 transition-all duration-200 px-2 font-body-md text-body-md" href="#">Repository</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 w-64 transition-all" placeholder="Search architecture..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-primary p-2 hover:bg-white/5 rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-primary p-2 hover:bg-white/5 rounded-full transition-all">contrast</button>
+<img class="w-8 h-8 rounded-full border border-primary/30" data-alt="A professional studio portrait of a high-end software architect with a minimalist aesthetic, wearing dark designer apparel. The lighting is moody with subtle indigo highlights on the side of the face, set against a deep obsidian architectural background that feels like a futuristic tech hub. The image is clean, sharp, and conveys senior-level expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGbKWQ6PEp9sbBOfsCbJuBJpVKILf9VkcAE6vgWrMqXKM5nFUv7MWqZI6es93gEl8gLVriCPcJT2rYl3Bse_uI0uc6lvL9oE0AbbQz7pqFWx7DXYZasXbbrPCbVTNwC-3sV45qHgNZXnj-2igrQ4UQdIPLe-Tj6PtYnTYxhyG6r1O7iaP-8zIfTEegvuhgLlGWA-XtExCvo53_iXu6iK8PvGLuvJN0DVjOJaR4d0US6_mA0-wcllbLrm9EeUz3S-YOSMN_m7pRFuI"/>
+</div>
+</header>
+<div class="flex flex-1 pt-16">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 flex flex-col py-md bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-2xl border-r border-white/10 hidden md:flex">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary">psychology</span>
+</div>
+<div>
+<div class="font-display font-semibold text-on-surface">Project Alpha</div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">AI Software Hub</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-sm">
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg bg-primary-container/20 text-primary border-r-4 border-primary group transition-all" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
+<span class="font-body-md text-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">timeline</span>
+<span class="font-body-md text-body-md">Timeline</span>
+</a>
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">code</span>
+<span class="font-body-md text-body-md">Repository</span>
+</a>
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md text-body-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Documentation</span>
+</a>
+</nav>
+<div class="px-sm mt-auto border-t border-white/5 pt-md">
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md text-body-md">Account</span>
+</a>
+</div>
+</aside>
+<!-- Main Visualization Canvas -->
+<main class="flex-1 md:ml-64 mr-80 relative overflow-hidden">
+<!-- Background WebGL Shader Placeholder -->
+
+<!-- Node Graph Overlay -->
+<div class="relative z-10 w-full h-full p-lg">
+<svg class="w-full h-full drop-shadow-2xl" viewbox="0 0 1000 700">
+<!-- Connections -->
+<g class="opacity-40">
+<path class="node-connection" d="M500 350 L200 200" fill="none" stroke="#c0c1ff" stroke-width="1"></path>
+<path class="node-connection" d="M500 350 L800 200" fill="none" stroke="#c0c1ff" stroke-width="1"></path>
+<path class="node-connection" d="M500 350 L200 500" fill="none" stroke="#4cd7f6" stroke-width="1"></path>
+<path class="node-connection" d="M500 350 L800 500" fill="none" stroke="#4cd7f6" stroke-width="1"></path>
+<path class="node-connection" d="M500 350 L500 150" fill="none" stroke="#c0c1ff" stroke-width="1"></path>
+<path class="node-connection" d="M500 350 L500 550" fill="none" stroke="#4cd7f6" stroke-width="1"></path>
+</g>
+<!-- Central Node: Brain -->
+<g class="cursor-pointer" transform="translate(500, 350)">
+<circle class="node-pulse" fill="rgba(192, 193, 255, 0.1)" r="60" stroke="#c0c1ff" stroke-width="2"></circle>
+<circle fill="url(#gradBrain)" r="40"></circle>
+<text fill="#e1e0ff" font-family="Space Grotesk" font-size="14" font-weight="700" text-anchor="middle" y="5">BRAIN</text>
+<defs>
+<radialgradient id="gradBrain">
+<stop offset="0%" stop-color="#494bd6"></stop>
+<stop offset="100%" stop-color="#1000a9"></stop>
+</radialgradient>
+</defs>
+</g>
+<!-- Node: Auth -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(200, 200)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#c0c1ff" stroke-width="1" width="80" x="-40" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">AUTH</text>
+<circle class="node-pulse" cx="0" cy="-20" fill="#c0c1ff" r="4"></circle>
+</g>
+<!-- Node: Database -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(800, 200)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#c0c1ff" stroke-width="1" width="100" x="-50" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">DATABASE</text>
+</g>
+<!-- Node: Frontend -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(200, 500)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#4cd7f6" stroke-width="1" width="100" x="-50" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">FRONTEND</text>
+</g>
+<!-- Node: Payments -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(500, 550)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#4cd7f6" stroke-width="1" width="100" x="-50" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">PAYMENTS</text>
+</g>
+<!-- Node: Backend -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(800, 500)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#4cd7f6" stroke-width="1" width="100" x="-50" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">BACKEND</text>
+</g>
+<!-- Node: APIs -->
+<g class="hover:scale-110 transition-transform cursor-pointer" transform="translate(500, 150)">
+<rect fill="#1b1b23" height="40" rx="10" stroke="#c0c1ff" stroke-width="1" width="80" x="-40" y="-20"></rect>
+<text fill="#c7c4d7" font-family="Inter" font-size="10" text-anchor="middle" y="5">APIS</text>
+</g>
+</svg>
+<!-- Floating Tooltip Example -->
+<div class="absolute bottom-md left-md glass-panel p-md rounded-2xl w-72">
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-display font-semibold text-primary">System Health</h3>
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">OPTIMAL</span>
+</div>
+<div class="space-y-xs">
+<div class="flex justify-between text-xs text-on-surface-variant">
+<span>Latency</span>
+<span class="font-code-md text-primary">12ms</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-2/3"></div>
+</div>
+<div class="flex justify-between text-xs text-on-surface-variant">
+<span>Throughput</span>
+<span class="font-code-md text-primary">1.2k req/s</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right AI Summary Panel -->
+<aside class="fixed right-0 top-16 bottom-0 w-80 glass-panel border-l border-white/10 p-md flex flex-col gap-md">
+<div class="flex items-center gap-3 p-sm rounded-2xl bg-primary/10 border border-primary/20">
+<div class="flex-1">
+<div class="text-[10px] text-primary font-bold uppercase tracking-widest">AI Confidence</div>
+<div class="text-display text-primary shimmer-text">94%</div>
+</div>
+<div class="w-12 h-12 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-primary animate-spin-slow" style="animation-duration: 8s">settings_backup_restore</span>
+</div>
+</div>
+<section class="space-y-sm">
+<h4 class="font-display text-label-sm text-on-surface-variant uppercase tracking-widest px-1">Current Sprint</h4>
+<div class="glass-panel p-md rounded-xl space-y-md">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-sm font-medium">Neural API Integration</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-white/20"></div>
+<span class="text-sm text-on-surface-variant">Database Sharding Prep</span>
+</div>
+<div class="pt-sm border-t border-white/5 flex items-center justify-between">
+<span class="text-[10px] text-on-surface-variant">Remaining</span>
+<span class="text-xs font-code-md">4d 12h</span>
+</div>
+</div>
+</section>
+<section class="space-y-sm">
+<h4 class="font-display text-label-sm text-on-surface-variant uppercase tracking-widest px-1">Recent Decisions</h4>
+<div class="space-y-xs">
+<div class="p-sm rounded-xl hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-xs text-secondary">verified_user</span>
+<span class="text-xs font-semibold">Switch to Auth0</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Optimization of user provisioning flow for edge cases.</p>
+</div>
+<div class="p-sm rounded-xl hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/10">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-xs text-primary">storage</span>
+<span class="text-xs font-semibold">PostgreSQL Scaling</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">AI suggested index optimization on "orders" table.</p>
+</div>
+</div>
+</section>
+<section class="mt-auto space-y-sm">
+<h4 class="font-display text-label-sm text-on-surface-variant uppercase tracking-widest px-1">Technical Stack</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-code-md border border-white/5">React 18</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-code-md border border-white/5">Rust</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-code-md border border-white/5">GraphQL</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-code-md border border-white/5">K8s</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-code-md border border-white/5">Redis</span>
+</div>
+</section>
+<button class="w-full py-3 bg-primary text-on-primary rounded-xl font-display font-bold text-sm flex items-center justify-center gap-2 group hover:shadow-[0_0_20px_rgba(192,193,255,0.4)] transition-all">
+<span>GENERATE REPORT</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">bolt</span>
+</button>
+</aside>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-96 z-50 w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-transform md:hidden">
+<span class="material-symbols-outlined">smart_toy</span>
+</button>
+<script>
+        // Micro-interactions for the node graph
+        document.querySelectorAll('g.cursor-pointer').forEach(node => {
+            node.addEventListener('mouseenter', () => {
+                // Potential to trigger focus state in AI Summary
+            });
+        });
+
+        // Basic interactivity for the search bar
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('w-80');
+            searchInput.classList.remove('w-64');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('w-80');
+            searchInput.classList.add('w-64');
+        });
+    </script>
+</body></html>

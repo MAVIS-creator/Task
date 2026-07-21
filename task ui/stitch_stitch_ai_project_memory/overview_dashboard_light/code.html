@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Brain | Overview Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#0d1c2e",
+                    "tertiary-fixed": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#c4c7c9",
+                    "surface-bright": "#f8f9ff",
+                    "background": "#f8f9ff",
+                    "secondary": "#565e74",
+                    "primary-container": "#6063ee",
+                    "on-primary-fixed": "#07006c",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c7c4d7",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#464554",
+                    "on-surface": "#0d1c2e",
+                    "surface-container-low": "#eff4ff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "tertiary-container": "#727577",
+                    "primary": "#4648d4",
+                    "on-secondary-fixed": "#131b2e",
+                    "inverse-on-surface": "#eaf1ff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#dae2fd",
+                    "surface-container": "#e6eeff",
+                    "surface": "#f8f9ff",
+                    "on-tertiary-container": "#fbfdff",
+                    "surface-container-high": "#dce9ff",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#767586",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d5e3fc",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed": "#dae2fd",
+                    "on-tertiary-fixed-variant": "#444749",
+                    "surface-dim": "#ccdbf3",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "surface-container-highest": "#d5e3fc",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#fffbff",
+                    "on-tertiary-fixed": "#191c1e",
+                    "surface-tint": "#494bd6",
+                    "tertiary": "#595c5e",
+                    "inverse-primary": "#c0c1ff",
+                    "on-secondary-container": "#5c647a",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "inverse-surface": "#233144"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xxl": "64px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "container-max": "1440px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "xl": "40px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Space Grotesk"],
+                    "display": ["Space Grotesk"],
+                    "headline-md": ["Space Grotesk"],
+                    "headline-lg-mobile": ["Space Grotesk"],
+                    "body-md": ["Inter"],
+                    "button-text": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-mono": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "button-text": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-mono": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid #e2e8f0;
+        }
+        .ambient-shadow {
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.04), 0 10px 20px -5px rgba(0, 0, 0, 0.02);
+        }
+        .ai-gradient-border {
+            position: relative;
+        }
+        .ai-gradient-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        .sidebar-item-active {
+            background-color: #6063ee;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface-bright font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Anchor) -->
+<aside class="fixed left-0 top-0 h-screen w-64 flex flex-col p-md z-40 bg-surface-bright/80 backdrop-blur-xl border-r border-outline-variant/30 shadow-md">
+<div class="flex items-center gap-md mb-xxl px-sm">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-md text-on-surface leading-none">Intelligence</h2>
+<span class="font-label-mono text-[10px] text-outline">V1.0.4</span>
+</div>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="sidebar-item-active flex items-center gap-md px-md py-sm rounded-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-body-sm">Project Brain</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-body-sm">Timeline</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-body-sm">Repository</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-sm">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-sm">Documentation</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="font-body-sm">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md">
+<button class="w-full bg-primary text-white font-button-text py-md rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                Upgrade Plan
+            </button>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar (Anchor) -->
+<header class="sticky top-0 z-50 flex justify-between items-center px-xl h-16 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-xl">
+<h1 class="font-headline-md font-bold text-on-surface">Project Brain</h1>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-primary font-semibold border-b-2 border-primary py-xs" href="#">Projects</a>
+<a class="text-on-surface-variant hover:bg-secondary-container/50 px-sm py-xs rounded transition-colors" href="#">Activity</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-xl pr-md py-xs text-body-sm w-64 focus:ring-2 focus:ring-primary/20" placeholder="Search insights..." type="text"/>
+</div>
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software developer with a clean, high-key studio lighting aesthetic, focused on a minimalist white background to match a premium UI design. The subject is smiling warmly, representing an approachable and efficient technical leader." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3_7mMFEyrpvjNr7dGucR2pFJVp1WyZADQrRzek9CVwwkPHf6jTE3pcJIn40D9i8Xndwho32qBbtjhbZOOgvi-wSBdmPVhX7ZXsZpoShTHH85TzIV9Qo6glU6FXeEYeRBl7EwPDlknPdPN7DV6ZCyFMnVGMSSvyszhY_MUVqHlavGjNmBqpiykxOmZFLZiCV7ZZgrf7TbpWNpdXenhNBDN-ZNJ0uWEq0lzU_4Gy6eVe8cjrFhvfYDvK6Rk2KqQf5uuxT62Dvop2i8"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="p-xl space-y-xxl max-w-container-max mx-auto">
+<!-- Hero Section -->
+<section class="space-y-sm">
+<div class="flex items-center gap-sm text-primary font-label-mono">
+<span class="material-symbols-outlined text-md" style="font-variation-settings: 'FILL' 1;">spark</span>
+<span>AI OVERVIEW ACTIVE</span>
+</div>
+<h2 class="font-display text-on-background max-w-2xl">Good Evening, Samuel. Your project remembers everything.</h2>
+<p class="text-body-lg text-on-surface-variant max-w-xl">Intelligent context mapping has synthesized 14 new commits and 3 architectural shifts since your last session.</p>
+</section>
+<!-- Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Metrics Grid (Bento Style) -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<div class="grid grid-cols-3 gap-gutter">
+<!-- Metric 1 -->
+<div class="glass-card ambient-shadow rounded-lg p-lg space-y-md group hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start">
+<div class="p-sm rounded-xl bg-success-container/10 text-emerald-600 border border-emerald-100">
+<span class="material-symbols-outlined">health_and_safety</span>
+</div>
+<span class="text-emerald-500 font-label-mono text-xs">+0.4%</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-body-sm">Repository Health</p>
+<h3 class="font-headline-lg">98%</h3>
+</div>
+<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[98%]"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="glass-card ambient-shadow rounded-lg p-lg space-y-md group hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start">
+<div class="p-sm rounded-xl bg-primary-container/10 text-primary border border-primary/10">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<span class="text-primary font-label-mono text-xs">LIVE</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-body-sm">Memory Nodes</p>
+<h3 class="font-headline-lg">1,240</h3>
+</div>
+<p class="text-[10px] text-outline font-label-mono">MAPPED FROM CODEBASE</p>
+</div>
+<!-- Metric 3 -->
+<div class="glass-card ambient-shadow rounded-lg p-lg space-y-md group hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start">
+<div class="p-sm rounded-xl bg-secondary-container/10 text-secondary border border-secondary/10">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<span class="text-on-surface-variant font-label-mono text-xs">WEEKLY</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-body-sm">Project Decisions</p>
+<h3 class="font-headline-lg">42</h3>
+</div>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-indigo-200 border-2 border-white"></div>
+<div class="w-6 h-6 rounded-full bg-purple-200 border-2 border-white"></div>
+<div class="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-bold">+5</div>
+</div>
+</div>
+</div>
+<!-- Repository Visualization (Asymmetric Large Card) -->
+<div class="glass-card ambient-shadow rounded-lg p-xl relative overflow-hidden h-[340px]">
+<div class="relative z-10 space-y-lg h-full flex flex-col">
+<div class="flex justify-between items-center">
+<div>
+<h4 class="font-headline-md">Knowledge Graph Expansion</h4>
+<p class="text-body-sm text-on-surface-variant">Real-time mapping of logic dependencies</p>
+</div>
+<button class="flex items-center gap-xs text-primary font-button-text px-md py-sm border border-outline-variant/50 rounded-xl hover:bg-surface-container-high transition-all">
+                                    View Full Graph <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="flex-1 w-full bg-surface-container-low/50 rounded-xl border border-dashed border-outline-variant/50 flex items-center justify-center relative">
+<!-- Abstract decorative background element for visual interest -->
+<div class="absolute inset-0 opacity-40">
+
+</div>
+<div class="text-center space-y-sm relative z-10">
+<span class="material-symbols-outlined text-xxl text-primary/40">polyline</span>
+<p class="font-label-mono text-outline uppercase tracking-widest text-xs">Processing neural links...</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insights Panel -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-md">AI Insights</h4>
+<span class="px-md py-xs bg-primary-container/10 text-primary rounded-full text-[10px] font-label-mono font-bold">4 NEW</span>
+</div>
+<div class="space-y-md">
+<!-- Insight Card 1 -->
+<div class="glass-card ambient-shadow rounded-lg p-md ai-gradient-border group cursor-pointer hover:bg-white transition-all">
+<div class="flex gap-md">
+<div class="mt-xs">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="space-y-xs">
+<h5 class="font-semibold text-body-md">Auth module completed</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">System detected a finalized JWT implementation in the last commit. Security patterns are consistent with your architecture guidelines.</p>
+<div class="pt-sm flex items-center gap-md">
+<span class="font-label-mono text-[10px] text-outline px-sm py-0.5 bg-surface-container-high rounded">2m ago</span>
+<button class="text-primary font-button-text text-xs hover:underline">Review Docs</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Insight Card 2 -->
+<div class="glass-card ambient-shadow rounded-lg p-md border-l-4 border-l-amber-400 group cursor-pointer hover:bg-white transition-all">
+<div class="flex gap-md">
+<div class="mt-xs">
+<span class="material-symbols-outlined text-amber-500">warning</span>
+</div>
+<div class="space-y-xs">
+<h5 class="font-semibold text-body-md">README needs update</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">The recent additions to the /api folder aren't documented in the project root. Should I draft the update?</p>
+<div class="pt-sm flex gap-sm">
+<button class="bg-on-background text-white font-button-text text-[10px] px-md py-1.5 rounded-lg hover:opacity-90">Auto-Update</button>
+<button class="border border-outline-variant text-on-surface-variant font-button-text text-[10px] px-md py-1.5 rounded-lg hover:bg-surface-container">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Insight Card 3 -->
+<div class="glass-card ambient-shadow rounded-lg p-md group cursor-pointer hover:bg-white transition-all">
+<div class="flex gap-md">
+<div class="mt-xs">
+<span class="material-symbols-outlined text-indigo-400">lightbulb</span>
+</div>
+<div class="space-y-xs">
+<h5 class="font-semibold text-body-md">Dependency Suggestion</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">Observed repetitive logic in your data parsers. Switching to Zod for validation could reduce codebase size by ~4%.</p>
+<div class="pt-sm">
+<span class="font-label-mono text-[10px] text-outline px-sm py-0.5 bg-surface-container-high rounded">1h ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button for AI (Contextual) -->
+<div class="pt-md">
+<button class="w-full flex items-center justify-center gap-md py-md bg-surface-container-lowest border border-primary/20 text-primary rounded-xl font-button-text hover:bg-primary/5 transition-all group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">bolt</span>
+                                Ask Project Brain Anything
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Recent Activity Table -->
+<section class="glass-card ambient-shadow rounded-lg p-xl">
+<div class="flex justify-between items-center mb-xl">
+<h4 class="font-headline-md">System Memory Logs</h4>
+<div class="flex gap-sm">
+<button class="p-xs hover:bg-surface-container-high rounded transition-all"><span class="material-symbols-outlined text-outline">filter_list</span></button>
+<button class="p-xs hover:bg-surface-container-high rounded transition-all"><span class="material-symbols-outlined text-outline">download</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant/30 font-label-mono text-[10px] text-outline uppercase tracking-wider">
+<th class="pb-md font-medium">Origin</th>
+<th class="pb-md font-medium">Activity</th>
+<th class="pb-md font-medium">Impact</th>
+<th class="pb-md font-medium">Timestamp</th>
+<th class="pb-md font-medium">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-md flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-medium text-body-sm">Git Hook</span>
+</td>
+<td class="py-md text-body-sm">Pushed 3 commits to <span class="font-label-mono text-xs bg-slate-100 px-1 rounded">main</span></td>
+<td class="py-md">
+<span class="px-sm py-0.5 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold">NEUTRAL</span>
+</td>
+<td class="py-md text-outline text-xs">14:23:01</td>
+<td class="py-md">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary">open_in_new</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-md flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<span class="font-medium text-body-sm">AI Agent</span>
+</td>
+<td class="py-md text-body-sm">Refined knowledge map for <span class="italic">user_service.ts</span></td>
+<td class="py-md">
+<span class="px-sm py-0.5 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-[10px] font-bold">STRUCTURAL</span>
+</td>
+<td class="py-md text-outline text-xs">12:05:44</td>
+<td class="py-md">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary">open_in_new</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for subtle JS-driven parallax or glow effects
+            });
+        });
+    </script>
+</body></html>

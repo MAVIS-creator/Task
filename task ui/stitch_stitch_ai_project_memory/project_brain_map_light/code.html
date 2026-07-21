@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid #e2e8f0;
+    }
+    .node-glow {
+      filter: drop-shadow(0 0 12px rgba(70, 72, 212, 0.3));
+    }
+    .node-line {
+      stroke-dasharray: 8;
+      animation: dash 30s linear infinite;
+    }
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+    .brain-pulse {
+      animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.1); }
+    }
+    body {
+      background-color: #f8f9ff;
+      overflow: hidden;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#0d1c2e",
+            "tertiary-fixed": "#e0e3e5",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#c4c7c9",
+            "surface-bright": "#f8f9ff",
+            "background": "#f8f9ff",
+            "secondary": "#565e74",
+            "primary-container": "#6063ee",
+            "on-primary-fixed": "#07006c",
+            "on-error-container": "#93000a",
+            "outline-variant": "#c7c4d7",
+            "error": "#ba1a1a",
+            "on-surface-variant": "#464554",
+            "on-surface": "#0d1c2e",
+            "surface-container-low": "#eff4ff",
+            "on-error": "#ffffff",
+            "on-primary-fixed-variant": "#2f2ebe",
+            "tertiary-container": "#727577",
+            "primary": "#4648d4",
+            "on-secondary-fixed": "#131b2e",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-container-lowest": "#ffffff",
+            "secondary-container": "#dae2fd",
+            "surface-container": "#e6eeff",
+            "surface": "#f8f9ff",
+            "on-tertiary-container": "#fbfdff",
+            "surface-container-high": "#dce9ff",
+            "secondary-fixed-dim": "#bec6e0",
+            "on-tertiary": "#ffffff",
+            "outline": "#767586",
+            "on-primary": "#ffffff",
+            "surface-variant": "#d5e3fc",
+            "primary-fixed": "#e1e0ff",
+            "secondary-fixed": "#dae2fd",
+            "on-tertiary-fixed-variant": "#444749",
+            "surface-dim": "#ccdbf3",
+            "on-secondary-fixed-variant": "#3f465c",
+            "surface-container-highest": "#d5e3fc",
+            "error-container": "#ffdad6",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-fixed": "#191c1e",
+            "surface-tint": "#494bd6",
+            "tertiary": "#595c5e",
+            "inverse-primary": "#c0c1ff",
+            "on-secondary-container": "#5c647a",
+            "primary-fixed-dim": "#c0c1ff",
+            "inverse-surface": "#233144"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "xxl": "64px",
+            "lg": "24px",
+            "sm": "8px",
+            "xs": "4px",
+            "container-max": "1440px",
+            "gutter": "24px",
+            "unit": "4px",
+            "xl": "40px",
+            "md": "16px"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "headline-lg": ["Space Grotesk"],
+            "display": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "button-text": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-mono": ["JetBrains Mono"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="text-on-surface font-body-md bg-surface-bright">
+<!-- Side Navigation (Predicted Component) -->
+<aside class="fixed left-0 top-0 h-screen flex flex-col p-md z-40 bg-surface-bright/80 dark:bg-surface-dim/80 backdrop-blur-xl border-r border-outline-variant/30 shadow-md w-64">
+<div class="flex items-center gap-md mb-xl px-sm">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Intelligence</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-70">V1.0.4</p>
+</div>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-body-sm">Project Brain</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-body-sm">Timeline</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-body-sm">Repository</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-sm">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-sm">Documentation</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="font-body-sm">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm hover:bg-surface-container-high transition-all duration-300 rounded-lg text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant/20">
+<button class="w-full py-md bg-primary text-white rounded-xl font-button-text text-button-text active:scale-95 transition-transform">
+        Upgrade Plan
+      </button>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-64 relative w-[calc(100%-16rem)] h-screen overflow-hidden">
+<!-- Top Bar (Predicted Component) -->
+<header class="flex justify-between items-center px-lg h-16 w-full sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Project Brain</span>
+<div class="flex gap-md ml-xl">
+<a class="text-on-surface-variant hover:bg-secondary-container/50 transition-colors px-md py-1 rounded-full font-body-md" href="#">Projects</a>
+<a class="text-primary font-semibold border-b-2 border-primary px-md py-1 font-body-md" href="#">Activity</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center ml-sm overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer with a neutral expression, clean lighting, and a soft minimalist studio background that matches a high-end technical enterprise UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJFIuxkYeTJuv4t7dogYbCGXXIYa3fgE5jOgvSM9yk0ymoE3dYYlaZOu754LiYp5h-0vWBtsELa5XOgrj3Qjb3wEXyUf8OrV6mCsMSQLn8TUOaDsX59ask3Oexfh12qnng558IaFGca1v_N84nEMaN2ZQB3o4lrU9r3tCKgTs8D2GxXNh9eOcn23l9HVGWDo6neD0dDcZkRl6sOWfQmOxIBEJhv9DlUBOvEktbB8RSMyLg8iYit5yumKRL55UThD1z8L7HNdjWREU"/>
+</div>
+</div>
+</header>
+<!-- Map Visualization Container -->
+<div class="absolute inset-0 flex items-center justify-center">
+<!-- Background Ambient Glow -->
+
+<!-- SVG Map Canvas -->
+<svg class="w-full h-full max-w-5xl max-h-[819px] relative z-10" fill="none" viewbox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<!-- Connector Lines -->
+<g class="node-line opacity-20">
+<path d="M500 400 L300 200" stroke="url(#lineGradient)" stroke-width="2"></path>
+<path d="M500 400 L700 200" stroke="url(#lineGradient)" stroke-width="2"></path>
+<path d="M500 400 L200 400" stroke="url(#lineGradient)" stroke-width="2"></path>
+<path d="M500 400 L800 400" stroke="url(#lineGradient)" stroke-width="2"></path>
+<path d="M500 400 L350 600" stroke="url(#lineGradient)" stroke-width="2"></path>
+<path d="M500 400 L650 600" stroke="url(#lineGradient)" stroke-width="2"></path>
+</g>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="lineGradient" x1="500" x2="300" y1="400" y2="200">
+<stop stop-color="#4648d4"></stop>
+<stop offset="1" stop-color="#6063ee" stop-opacity="0"></stop>
+</lineargradient>
+<filter id="glow">
+<fegaussianblur result="coloredBlur" stddeviation="4"></fegaussianblur>
+<femerge>
+<femergenode in="coloredBlur"></femergenode>
+<femergenode in="SourceGraphic"></femergenode>
+</femerge>
+</filter>
+</defs>
+<!-- Nodes -->
+<!-- Central Brain Node -->
+<circle class="brain-pulse" cx="500" cy="400" fill="#4648d4" fill-opacity="0.1" r="60"></circle>
+<g class="cursor-pointer group" transform="translate(455, 355)">
+<rect class="node-glow" fill="#4648d4" height="90" rx="24" width="90"></rect>
+<text fill="white" font-family="Material Symbols Outlined" font-size="40" text-anchor="middle" x="45" y="55">psychology</text>
+<text fill="#0d1c2e" font-family="Space Grotesk" font-size="16" font-weight="600" text-anchor="middle" x="45" y="110">BRAIN</text>
+</g>
+<!-- Peripheral Nodes -->
+<!-- Auth -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(250, 150)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">fingerprint</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">Auth</text>
+</g>
+<!-- APIs -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(700, 150)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">api</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">APIs</text>
+</g>
+<!-- Database -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(150, 400)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">database</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">Database</text>
+</g>
+<!-- Frontend -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(850, 400)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">web</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">Frontend</text>
+</g>
+<!-- Backend -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(320, 630)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">terminal</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">Backend</text>
+</g>
+<!-- Payments -->
+<g class="cursor-pointer group hover:-translate-y-1 transition-transform" transform="translate(680, 630)">
+<circle class="shadow-sm" fill="white" r="35" stroke="#e2e8f0" stroke-width="1"></circle>
+<text fill="#4648d4" font-family="Material Symbols Outlined" font-size="24" text-anchor="middle" y="8">payments</text>
+<text fill="#464554" font-family="Inter" font-size="14" font-weight="500" text-anchor="middle" y="55">Payments</text>
+</g>
+</svg>
+</div>
+<!-- Right Control Panel -->
+<aside class="absolute right-lg top-xxl w-72 flex flex-col gap-lg z-20">
+<!-- AI Confidence Card -->
+<div class="glass-card p-lg rounded-lg shadow-sm">
+<div class="flex justify-between items-center mb-md">
+<span class="text-on-surface-variant font-semibold text-body-sm">AI Confidence</span>
+<span class="font-label-mono text-label-mono text-primary bg-primary-fixed px-2 py-0.5 rounded-full">REALTIME</span>
+</div>
+<div class="text-headline-lg font-headline-lg text-primary">94%</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-md overflow-hidden">
+<div class="bg-primary h-full w-[94%] rounded-full"></div>
+</div>
+</div>
+<!-- Current Sprint Card -->
+<div class="glass-card p-lg rounded-lg shadow-sm">
+<h3 class="text-on-surface-variant font-semibold text-body-sm mb-sm">Current Sprint</h3>
+<p class="font-headline-md text-on-surface text-lg">Neural API Integration</p>
+<div class="mt-md flex items-center gap-sm text-on-surface-variant text-body-sm">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Due in 4 days</span>
+</div>
+</div>
+<!-- Recent Decisions Card -->
+<div class="glass-card p-lg rounded-lg shadow-sm">
+<h3 class="text-on-surface-variant font-semibold text-body-sm mb-md">Recent Decisions</h3>
+<div class="space-y-md">
+<div class="flex gap-sm">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-body-sm font-medium">Switch to Rust for Core Logic</p>
+<p class="text-xs text-on-surface-variant opacity-60">14 hours ago</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-body-sm font-medium">Deprecate V2 Legacy APIs</p>
+<p class="text-xs text-on-surface-variant opacity-60">Yesterday</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-body-sm font-medium">Enable Edge Caching globally</p>
+<p class="text-xs text-on-surface-variant opacity-60">2 days ago</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Bottom Status Panel -->
+<div class="absolute bottom-lg left-lg right-lg h-20 glass-card rounded-lg flex items-center justify-between px-xl z-20">
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+<div>
+<div class="text-xs text-on-surface-variant uppercase font-label-mono tracking-wider">System Health</div>
+<div class="text-body-md font-semibold">All Systems Operational</div>
+</div>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div>
+<div class="text-xs text-on-surface-variant uppercase font-label-mono tracking-wider">Latency</div>
+<div class="text-body-md font-semibold text-primary">12ms</div>
+</div>
+<div>
+<div class="text-xs text-on-surface-variant uppercase font-label-mono tracking-wider">Throughput</div>
+<div class="text-body-md font-semibold">1.2k req/s</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a team lead with glasses, smiling warmly, in a modern bright tech office setting with soft focus background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3GKLlyqNCIwEs8cssHY0fEIDj2GsMx2u2TX1TqRMvJ3MrUJGWbSYAOmB_nbA4UI8I9xHNRYKzE4m_d63A5mHI4sxIGmJuaLS4ud9Y9I8b7rr5jmj-xInWpWdaI4lBzzS7p8Mz59FqD-Qp08ces9daV1GZMwTXz27dZlzU_JwrDpKyTYULkeMlhJRKRfNEzXlHqbPwlqq1JFDMYiRDDTNh2ZSj9Bel8w38tZngTbmWFs2F3A7zPuZ0t1OZuFQLt540wUZ3-QWWjuw"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female developer looking thoughtfully at a screen off-camera, professional lighting, clean minimal background with blue and violet hues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBch21DB_aYhdSMWAv24cDmhPzkU1fRHSFhauwBeifDCrkW55VCaZ7Jw0vwzpAsonOol2COG1Ytmq9lQrMSFMddNNagh67_3eatqNSYdLdN0bSiXNTQResnXtzuTCSTodBuNxCFE7yqKBkcBmaiwdXPQHtCkkyLRTwvizKIoh8L1IIvF4WhqFC_2X5ASvOKMdeeHsveoETHQBc4ZsEPm-kcdFtV1GoG09O9hv669S--lbFW0_bigyY_CbTnHuaTK-v9SsoYe4Dq3ks"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+4</div>
+</div>
+<button class="bg-surface-container hover:bg-surface-container-high px-md py-2 rounded-lg text-button-text font-button-text transition-colors">
+          View Logs
+        </button>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="absolute -top-32 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
+<div class="absolute -bottom-32 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-[100px]"></div>
+</main>
+<script>
+    // Simple micro-interaction for nodes
+    document.querySelectorAll('g.cursor-pointer').forEach(node => {
+      node.addEventListener('mouseenter', () => {
+        const circle = node.querySelector('circle');
+        const rect = node.querySelector('rect');
+        if (circle) circle.style.strokeWidth = '2px';
+        if (circle) circle.style.stroke = '#4648d4';
+        if (rect) rect.style.transform = 'scale(1.05)';
+        if (rect) rect.style.transition = 'transform 0.2s ease';
+      });
+      node.addEventListener('mouseleave', () => {
+        const circle = node.querySelector('circle');
+        const rect = node.querySelector('rect');
+        if (circle) circle.style.strokeWidth = '1px';
+        if (circle) circle.style.stroke = '#e2e8f0';
+        if (rect) rect.style.transform = 'scale(1)';
+      });
+    });
+  </script>
+</body></html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Repository Intelligence | Project Brain</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0d1c2e",
+                        "tertiary-fixed": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "surface-bright": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "secondary": "#565e74",
+                        "primary-container": "#6063ee",
+                        "on-primary-fixed": "#07006c",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c7c4d7",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#464554",
+                        "on-surface": "#0d1c2e",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-container": "#727577",
+                        "primary": "#4648d4",
+                        "on-secondary-fixed": "#131b2e",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#dae2fd",
+                        "surface-container": "#e6eeff",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-container": "#fbfdff",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#767586",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d5e3fc",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#444749",
+                        "surface-dim": "#ccdbf3",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "surface-container-highest": "#d5e3fc",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fffbff",
+                        "on-tertiary-fixed": "#191c1e",
+                        "surface-tint": "#494bd6",
+                        "tertiary": "#595c5e",
+                        "inverse-primary": "#c0c1ff",
+                        "on-secondary-container": "#5c647a",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "inverse-surface": "#233144"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xxl": "64px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "xl": "40px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Space Grotesk"],
+                        "display": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "headline-lg-mobile": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "button-text": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-mono": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "button-text": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-mono": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.02), 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+        .code-syntax-keyword { color: #4648d4; font-weight: 600; }
+        .code-syntax-string { color: #059669; }
+        .code-syntax-comment { color: #64748b; font-style: italic; }
+        .code-syntax-func { color: #7c3aed; }
+        
+        .ai-pulse {
+            animation: pulse-border 3s infinite;
+        }
+        @keyframes pulse-border {
+            0% { border-color: #6063ee; box-shadow: 0 0 0 0 rgba(96, 99, 238, 0.2); }
+            50% { border-color: #7c3aed; box-shadow: 0 0 10px 2px rgba(124, 58, 237, 0.1); }
+            100% { border-color: #6063ee; box-shadow: 0 0 0 0 rgba(96, 99, 238, 0.2); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-surface-bright font-body-md text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen flex flex-col p-md z-40 bg-surface-bright/80 backdrop-blur-xl border-r border-outline-variant/30 shadow-md w-64 hidden md:flex">
+<div class="flex items-center gap-sm mb-xxl px-sm">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">Intelligence</h1>
+<p class="text-[10px] font-label-mono text-outline uppercase tracking-widest">V1.0.4</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Project Brain</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span>Timeline</span>
+</a>
+<a class="flex items-center gap-md p-md bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span>Repository</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span>AI Assistant</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span>Tasks</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-300 font-body-sm" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-md">
+<button class="w-full py-md px-lg bg-primary text-on-primary font-button-text rounded-xl hover:shadow-lg transition-all active:scale-95">
+                Upgrade Plan
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-lg h-16 w-full sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-xl">
+<div class="hidden lg:flex items-center bg-surface-container-low border border-outline-variant/30 rounded-full px-md py-1.5 w-80">
+<span class="material-symbols-outlined text-outline text-md mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full" placeholder="Search repository..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-lg">
+<a class="text-on-surface-variant hover:bg-secondary-container/50 transition-colors px-2 py-1 rounded" href="#">Projects</a>
+<a class="text-on-surface-variant hover:bg-secondary-container/50 transition-colors px-2 py-1 rounded" href="#">Activity</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-secondary-container/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female software engineer in a brightly lit modern office. She has a friendly expression and is wearing a sleek, dark blazer. The background is slightly blurred showing glass partitions and indoor plants, creating a high-end corporate tech environment with soft, warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASj4Re7uzV8OkvfeOHAgnZn-ZQmkEeyC8GrBlVlTRAbz5qDbYLcUDsGK9lMHGdBJM-mF0tBjQDNpMwufDrvoKCa0DgokA21I5gIL2Jmb2BAH2EdutHXs1RgOuhX_58bq1tBWSY14OfbsojpYMKawgILXV6uqoDSmMR1SoLPZ3Gm1NLSMVau8sMZviz4EBwXxtUY_WY8qtGSme_HwvMxk0-jR69OXj_OoOVeUFn9MKdeUKFA36DtvVlO8Wwc1GhXgTH8TQ4YpP9l8c"/>
+</div>
+</div>
+</header>
+<div class="p-xl max-w-[1600px] mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xl">
+<div>
+<nav class="flex items-center gap-xs text-outline font-label-mono mb-sm">
+<span>intelligence-platform</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-primary">src/services/auth-service.ts</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-on-background">Repository Intelligence</h2>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-sm px-lg py-sm border border-outline-variant text-on-surface-variant rounded-xl font-button-text hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[20px]">fork_right</span>
+                        Fork 1.2k
+                    </button>
+<button class="flex items-center gap-sm px-lg py-sm bg-primary text-on-primary rounded-xl font-button-text hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">star</span>
+                        Star 4.8k
+                    </button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex gap-lg border-b border-outline-variant/30 mb-lg">
+<button class="px-md py-md text-primary font-semibold border-b-2 border-primary flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">description</span>
+                    Files
+                </button>
+<button class="px-md py-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">history</span>
+                    Commits
+                </button>
+<button class="px-md py-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">alt_route</span>
+                    Pull Requests
+                    <span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold">12</span>
+</button>
+<button class="px-md py-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">error</span>
+                    Issues
+                </button>
+</div>
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Left: Code Viewer -->
+<div class="col-span-12 lg:col-span-8 space-y-md">
+<div class="glass-panel rounded-lg overflow-hidden flex flex-col h-[700px]">
+<!-- Code Header -->
+<div class="px-lg py-md border-b border-outline-variant/30 flex items-center justify-between bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">data_object</span>
+<span class="font-label-mono text-body-sm font-semibold">auth-service.ts</span>
+</div>
+<div class="flex gap-sm">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-mono text-on-surface-variant">Typescript</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-mono text-on-surface-variant">UTF-8</span>
+</div>
+</div>
+<!-- Code Body -->
+<div class="flex-1 overflow-auto bg-[#ffffff] p-lg font-label-mono text-body-sm leading-relaxed">
+<div class="flex gap-md">
+<div class="text-outline text-right select-none opacity-50 w-8">
+                                    1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18
+                                </div>
+<div class="flex-1">
+<span class="code-syntax-keyword">import</span> { <span class="code-syntax-func">AuthClient</span> } <span class="code-syntax-keyword">from</span> <span class="code-syntax-string">'@internal/core-auth'</span>;<br/>
+<span class="code-syntax-keyword">import</span> { <span class="code-syntax-func">Config</span> } <span class="code-syntax-keyword">from</span> <span class="code-syntax-string">'./config'</span>;<br/><br/>
+<!-- AI Summary Injected -->
+<div class="my-md p-md bg-primary-fixed/30 border-l-4 border-primary rounded-r-lg ai-pulse">
+<div class="flex items-center gap-sm mb-1">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-[10px] uppercase font-bold text-primary tracking-wider">AI Insight</span>
+</div>
+<p class="text-on-primary-fixed-variant text-sm font-body-md">This module handles OIDC logic and provides a centralized client for user session validation across the platform.</p>
+</div>
+<span class="code-syntax-keyword">export class</span> <span class="code-syntax-func">AuthenticationService</span> {<br/>
+                                      <span class="code-syntax-keyword">private</span> client: <span class="code-syntax-func">AuthClient</span>;<br/><br/>
+                                      <span class="code-syntax-keyword">constructor</span>(config: <span class="code-syntax-func">Config</span>) {<br/>
+                                        <span class="code-syntax-keyword">this</span>.client = <span class="code-syntax-keyword">new</span> <span class="code-syntax-func">AuthClient</span>({<br/>
+                                          issuer: config.oidc.issuer,<br/>
+                                          clientId: config.oidc.id<br/>
+                                        });<br/>
+                                      }<br/><br/>
+                                    
+                                      <span class="code-syntax-keyword">async</span> <span class="code-syntax-func">validateSession</span>(token: <span class="code-syntax-keyword">string</span>): <span class="code-syntax-func">Promise</span>&lt;<span class="code-syntax-keyword">boolean</span>&gt; {<br/>
+                                        <span class="code-syntax-keyword">return await this</span>.client.<span class="code-syntax-func">verify</span>(token);<br/>
+                                      }<br/>
+                                    }
+                                </div>
+</div>
+</div>
+</div>
+<!-- Bottom Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="glass-panel p-md rounded-xl flex items-center gap-md">
+<div class="p-sm bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-container">trending_up</span>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold">Code Coverage</p>
+<p class="text-xl font-headline-md">94.2%</p>
+</div>
+</div>
+<div class="glass-panel p-md rounded-xl flex items-center gap-md">
+<div class="p-sm bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined text-primary">bug_report</span>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold">Open Vulnerabilities</p>
+<p class="text-xl font-headline-md">0</p>
+</div>
+</div>
+<div class="glass-panel p-md rounded-xl flex items-center gap-md">
+<div class="p-sm bg-primary-container/20 rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold">Deployment Status</p>
+<p class="text-xl font-headline-md">Healthy</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar: Assistant & Info -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Chatbot Assistant -->
+<div class="glass-panel rounded-lg flex flex-col h-[400px]">
+<div class="p-md border-b border-outline-variant/30 flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-md">smart_toy</span>
+</div>
+<span class="font-bold text-sm">Repo Assistant</span>
+</div>
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+</div>
+<div class="flex-1 p-md overflow-auto space-y-md">
+<div class="bg-surface-container rounded-xl p-md text-body-sm w-4/5">
+                                How can I help you understand this repository today?
+                            </div>
+<div class="bg-primary-container text-on-primary-container rounded-xl p-md text-body-sm w-4/5 ml-auto">
+                                What does the OIDC logic do in the auth-service?
+                            </div>
+<div class="bg-surface-container rounded-xl p-md text-body-sm w-4/5">
+<div class="flex items-center gap-xs mb-1">
+<span class="material-symbols-outlined text-xs">auto_awesome</span>
+<span class="text-[10px] font-bold uppercase">Synthesizing</span>
+</div>
+                                It integrates with the internal core-auth library to validate session tokens against the configured OIDC issuer. It abstracts the verification process...
+                            </div>
+</div>
+<div class="p-md bg-surface-container-low">
+<div class="relative">
+<input class="w-full bg-white border border-outline-variant rounded-xl px-md py-2 pr-10 text-body-sm focus:ring-2 focus:ring-primary/50 transition-all outline-none" placeholder="Ask anything..." type="text"/>
+<button class="absolute right-2 top-1.5 text-primary">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Infrastructure Section -->
+<div class="glass-panel p-lg rounded-xl">
+<h3 class="font-headline-md text-sm font-bold mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">layers</span>
+                            Infrastructure
+                        </h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-lg bg-[#ffffff] border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">javascript</span>
+</div>
+<span class="text-body-sm font-medium">Express.js</span>
+</div>
+<span class="text-[10px] font-label-mono bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">v4.18.2</span>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-lg bg-[#ffffff] border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">database</span>
+</div>
+<span class="text-body-sm font-medium">PostgreSQL</span>
+</div>
+<span class="text-[10px] font-label-mono bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">v15.0</span>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-lg bg-[#ffffff] border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">cached</span>
+</div>
+<span class="text-body-sm font-medium">Redis</span>
+</div>
+<span class="text-[10px] font-label-mono bg-secondary-container px-2 py-0.5 rounded text-on-secondary-container">v7.0.5</span>
+</div>
+</div>
+</div>
+<!-- Collaborators Section -->
+<div class="glass-panel p-lg rounded-xl">
+<h3 class="font-headline-md text-sm font-bold mb-md flex items-center justify-between">
+<span class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">groups</span>
+                                Collaborators
+                            </span>
+<span class="text-[10px] font-label-mono text-outline">14 ACTIVE</span>
+</h3>
+<div class="flex flex-wrap gap-2">
+<div class="group relative">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm hover:z-10 hover:scale-110 transition-transform cursor-pointer" data-alt="Close-up headshot of a diverse male developer with short curly hair and modern glasses, smiling slightly. Clean white studio background with soft directional lighting, creating a high-end tech professional portrait look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL99fbJMcgRF33Nt7zTHAyF_8_lFG-4ZRObeKsprpgKwdk3vE0TaO1-7yhnK30BdRsGwVk6O318o1YazYcC2sHeZ3RFjCoqNTvnrCaJATQnB_W0GdONUu1VapsXfV5TE_kf5BP4aM24yo1yXgeOoNveqcIVC3xy3Y6awZuV5ASz7x6XqP_bcRCyPh9OfrCF-ZCA61KHKwy2-HbYZtDCPCWJYOht4kZq6VRNAdBO56HL1VAvdKMVpGUBQA8f23E6gv92xBVG917XLg"/>
+</div>
+<div class="group relative">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm hover:z-10 hover:scale-110 transition-transform cursor-pointer" data-alt="Portrait of a female software engineer of East Asian descent with a minimalist aesthetic, wearing a clean white linen shirt. Soft natural lighting from a large window creates a bright and airy atmosphere. High-resolution professional profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChHW3hfoyLYvluHmtxfiaEW4BHngptSYl_-z1y2v_Ter_59H_B_s3How8Cnr-ruyh0-NX_Abgor_03JZMrasNzDF5pXsuqwbU2M-gqmD8lJDPzFukTkWKpsmLFRdDwvYHOXRKbqwtx2qDFHaaupYgUbrJAjNAeC2BctdW8dNdCZeAb8DQ72VBBVO-6lX6oqVMMowTRwgP-HP0F8BIazf2hypV9gx-Gr9aju02HNTaWzYCTJpUB6YXv9arqWRe6s-JlQdjO5wsaB3Y"/>
+</div>
+<div class="group relative">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm hover:z-10 hover:scale-110 transition-transform cursor-pointer" data-alt="A profile photo of a senior developer with silver-flecked beard and an approachable expression. Wearing a navy polo shirt against a minimalist grey background. High-quality lighting typical of a premium tech workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1J9QCn4iUAI6R8taS09y7ifRnt-n3gzr3DbyEmdJq7-LGI3_0c3dTWKEjVL_4r7dQFmXX73GH3OQHaQwWRzLuaZrT-PGfVpZPBr5cHX-grfPB2O0L6FeD-FxlN2gGNfXvVZczmCkbh7jFFhyuJhjMIWU2iUFan-6pAoVntLhpsoNdqSghk2K1BgbWEwAnDcGzHl9pHBocLiCjxGp-yQ9oVZMe-2EmlBBrASyb5Ta0rrPCmFckp-M3vnYVgL8bAG4U7mXFRfL7V3s"/>
+</div>
+<div class="group relative">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm hover:z-10 hover:scale-110 transition-transform cursor-pointer" data-alt="Professional portrait of a young developer with dyed blue hair, expressing creativity and technical expertise. Modern studio lighting with subtle blue and purple accents in the background to match her hair. Sleek minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF5OsTER9uQIwWT3CP_5pLbFD31sbm3bk4drS1i2umIQm4R3TowM1q54RKjK14OQLLwVGtG2-nwDeEXLR_Awc3tHwGUi1DYYZb84KHSddRrZFBP4klSxAUC9fR3Sqr4yRT4WucCt0hdhCyq6q_vnS9AkaVRTjiMYgT0RX3Mm2oJVvP7R6y4fkCcB_Vl0jCAEJg9EiZXqQw7ERmLaYLwEiJ7QJScDf4zprI5JfdOjqucduIAH9xGBkSRnsKr48vYcmDigwNWFXerTM"/>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold text-on-surface-variant border-2 border-white shadow-sm">
+                                +10
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interactions for the "AI Insight" pulse effect
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Repository Intelligence UI Initialized');
+            
+            // Interaction: Code highlighting toggle simulation
+            const codeLines = document.querySelectorAll('.flex-1 > span');
+            codeLines.forEach(line => {
+                line.addEventListener('mouseenter', () => {
+                    line.style.backgroundColor = 'rgba(70, 72, 212, 0.05)';
+                });
+                line.addEventListener('mouseleave', () => {
+                    line.style.backgroundColor = 'transparent';
+                });
+            });
+        });
+    </script>
+</body></html>

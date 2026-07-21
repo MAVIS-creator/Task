@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Brain | Repository Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#494bd6",
+                    "background": "#13131b",
+                    "surface-tint": "#c0c1ff",
+                    "on-error": "#690005",
+                    "surface-dim": "#13131b",
+                    "on-tertiary-fixed-variant": "#45464e",
+                    "tertiary": "#c6c6cf",
+                    "on-primary-container": "#0d0096",
+                    "error-container": "#93000a",
+                    "surface-container-lowest": "#0d0d15",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e4e1ed",
+                    "outline-variant": "#464554",
+                    "on-secondary-container": "#00424e",
+                    "tertiary-container": "#909099",
+                    "tertiary-fixed-dim": "#c6c6cf",
+                    "on-primary-fixed": "#07006c",
+                    "inverse-on-surface": "#303038",
+                    "surface-container-high": "#292932",
+                    "error": "#ffb4ab",
+                    "outline": "#908fa0",
+                    "inverse-surface": "#e4e1ed",
+                    "surface-container": "#1f1f27",
+                    "secondary-container": "#03b5d3",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "surface-container-highest": "#34343d",
+                    "on-primary": "#1000a9",
+                    "surface-bright": "#393841",
+                    "on-secondary": "#003640",
+                    "on-tertiary-container": "#282930",
+                    "tertiary-fixed": "#e2e1eb",
+                    "surface-container-low": "#1b1b23",
+                    "on-surface-variant": "#c7c4d7",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "primary-container": "#8083ff",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "surface-variant": "#34343d",
+                    "secondary": "#4cd7f6",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "secondary-fixed": "#acedff",
+                    "surface": "#13131b",
+                    "on-surface": "#e4e1ed",
+                    "primary": "#c0c1ff",
+                    "on-tertiary": "#2f3037",
+                    "on-secondary-fixed": "#001f26",
+                    "on-tertiary-fixed": "#1a1b22"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "md": "24px",
+                    "gutter": "24px",
+                    "sm": "16px",
+                    "unit": "4px",
+                    "xs": "8px",
+                    "xl": "64px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "display": ["Space Grotesk"],
+                    "headline-lg-mobile": ["Space Grotesk"],
+                    "headline-md": ["Space Grotesk"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Space Grotesk"],
+                    "code-md": ["JetBrains Mono"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #09090B;
+            color: #e4e1ed;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(192, 193, 255, 0.3);
+            box-shadow: 0 0 40px rgba(73, 75, 214, 0.05);
+        }
+
+        .shimmer-border {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer-border::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 45%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 55%
+            );
+            animation: shimmer 6s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-30%, -30%); }
+            100% { transform: translate(30%, 30%); }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .syntax-keyword { color: #c0c1ff; }
+        .syntax-string { color: #4cd7f6; }
+        .syntax-comment { color: #6e6b7b; font-style: italic; }
+        .syntax-function { color: #acedff; }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 dark:border-white/5 shadow-[0_0_40px_rgba(73,75,214,0.15)]">
+<div class="flex items-center gap-sm">
+<span class="font-display text-headline-md font-bold tracking-tight text-primary dark:text-primary-fixed">Project Brain</span>
+<div class="hidden md:flex items-center gap-xs ml-lg">
+<nav class="flex gap-md">
+<a class="text-on-surface-variant font-medium hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-lg" href="#">Overview</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Repository</a>
+<a class="text-on-surface-variant font-medium hover:bg-white/5 transition-all duration-200 px-3 py-1 rounded-lg" href="#">AI Assistant</a>
+</nav>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search Repo Intelligence..." type="text"/>
+</div>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">contrast</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer with sharp lighting, set against a dark, minimalist studio background. The style is cinematic and high-fidelity, reflecting a premium technical professional's profile photo. Subtle indigo lens flares add a futuristic touch to the composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP5elSuriUhjEt28PymP8fR0KER0kwGFo5ZVksbPW8yzD-g7AQc3PRrU4iwkiQ0LDFNw0PfJV-_o1p1Dgd0YLn0hE8Jt30tUW7SDo-X3P4gUw9fEdnmc4X78GriY-BqLoVhBXQtygNuQvpsaIUpIO3HvdsZADXO4gXSXdW-mc51016vW32DC2K3O4v2JZJeS_GGp2xpGvj4nmEo1YOvzgT0U3MG-qBHNZf7zh6AxKmmmog89OxAaJTi8f4GyzeLKXVyOhvAcFuSgk"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 flex flex-col py-md bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-2xl border-r border-white/10 hidden md:flex z-40">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-sm p-sm rounded-xl bg-white/5">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">psychology</span>
+</div>
+<div>
+<div class="font-display font-semibold text-on-surface leading-tight">Project Alpha</div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">AI Software Hub</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-sm">
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:backdrop-blur-md transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg bg-primary-container/20 text-primary border-r-4 border-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">code</span>
+<span class="font-body-md">Repository</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:backdrop-blur-md transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">smart_toy</span>
+<span class="font-body-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:backdrop-blur-md transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">timeline</span>
+<span class="font-body-md">Timeline</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:backdrop-blur-md transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">description</span>
+<span class="font-body-md">Documentation</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:backdrop-blur-md transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">checklist</span>
+<span class="font-body-md">Tasks</span>
+</a>
+</nav>
+<div class="px-sm pt-md border-t border-white/5 space-y-1">
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Support</span>
+</a>
+<a class="flex items-center gap-sm px-md py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-body-md">Account</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 pt-16 min-h-screen">
+<!-- Content Header -->
+<div class="px-md lg:px-xl py-lg border-b border-white/5 bg-surface-container-low/30">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div>
+<div class="flex items-center gap-xs text-on-surface-variant mb-2">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="font-code-md text-label-sm">org-alpha / project-brain-core</span>
+</div>
+<h1 class="font-display text-headline-lg text-on-surface">Repository Intelligence</h1>
+</div>
+<div class="flex gap-sm">
+<button class="bg-primary hover:bg-primary-container text-on-primary px-6 py-2.5 rounded-xl font-bold transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                            Analyze Repo
+                        </button>
+<button class="bg-surface-container-highest border border-white/10 hover:bg-white/5 px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">fork_right</span>
+                            Fork
+                        </button>
+</div>
+</div>
+<!-- GitHub-inspired Tabs -->
+<div class="flex gap-xl mt-lg overflow-x-auto no-scrollbar border-b border-white/5">
+<button class="flex items-center gap-xs pb-3 border-b-2 border-primary text-primary font-semibold">
+<span class="material-symbols-outlined text-[18px]">description</span>
+                        Files
+                    </button>
+<button class="flex items-center gap-xs pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                        Commits
+                        <span class="bg-surface-container px-2 py-0.5 rounded-full text-[10px]">1,284</span>
+</button>
+<button class="flex items-center gap-xs pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">merge</span>
+                        Pull Requests
+                        <span class="bg-primary/20 text-primary px-2 py-0.5 rounded-full text-[10px]">12</span>
+</button>
+<button class="flex items-center gap-xs pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">error</span>
+                        Issues
+                    </button>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="px-md lg:px-xl py-lg max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: File Explorer & Code -->
+<div class="lg:col-span-8 space-y-gutter">
+<!-- AI Summary Hero -->
+<div class="glass-card shimmer-border rounded-xl p-md flex items-start gap-md">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-display text-headline-md mb-1 text-on-surface">Intelligence Summary</h3>
+<p class="text-on-surface-variant font-body-md leading-relaxed">
+                                This repository is a high-performance neural engine built with TypeScript. The core architecture leverages <span class="text-secondary font-code-md">distributed graph nodes</span> for real-time inference. Express is used primarily for routing internal API calls, while the custom <span class="text-primary font-code-md">BrainEngine</span> handles heavy computation.
+                            </p>
+</div>
+</div>
+<!-- Repository Structure -->
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="px-md py-sm bg-surface-container-high/40 border-b border-white/5 flex justify-between items-center">
+<div class="flex items-center gap-md">
+<span class="font-code-md text-label-sm text-on-surface-variant">src/core/engine.ts</span>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded border border-secondary/20 font-code-md uppercase">Analysis Active</span>
+</div>
+<div class="flex gap-sm">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">content_copy</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">unfold_more</button>
+</div>
+</div>
+<!-- AI Inline Annotation -->
+<div class="bg-primary-container/10 border-l-4 border-primary px-md py-3 flex items-center gap-md">
+<span class="material-symbols-outlined text-primary text-[20px]">psychology</span>
+<span class="text-body-md text-on-surface italic">"This module contains all authentication logic and jwt verification."</span>
+</div>
+<!-- Code Content -->
+<div class="p-md bg-[#0A0A0A] font-code-md text-code-md overflow-x-auto">
+<pre class="leading-loose"><code><span class="syntax-keyword">import</span> { BrainEngine } <span class="syntax-keyword">from</span> <span class="syntax-string">"./BrainEngine"</span>;
+<span class="syntax-keyword">import</span> { Router } <span class="syntax-keyword">from</span> <span class="syntax-string">"express"</span>;
+
+<span class="syntax-comment">// Initialize intelligent routing layer</span>
+<span class="syntax-keyword">const</span> coreRouter = <span class="syntax-function">Router</span>();
+
+<span class="syntax-keyword">export const</span> <span class="syntax-function">processNeuralPulse</span> = <span class="syntax-keyword">async</span> (payload: PulseData) =&gt; {
+    <span class="syntax-keyword">const</span> engine = <span class="syntax-keyword">new</span> <span class="syntax-function">BrainEngine</span>();
+    
+    <span class="syntax-comment">// AI Insight: Express handles high-frequency routing here</span>
+    <span class="syntax-keyword">return await</span> engine.<span class="syntax-function">compute</span>(payload, {
+        highPrecision: <span class="syntax-keyword">true</span>,
+        latencyLimit: <span class="syntax-string">"50ms"</span>
+    });
+};</code></pre>
+</div>
+</div>
+<!-- Directory Analysis Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="glass-card rounded-xl p-md">
+<div class="flex items-center justify-between mb-md">
+<span class="font-display font-semibold text-on-surface">Module Dependency</span>
+<span class="material-symbols-outlined text-secondary">hub</span>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Core Engine</span>
+<div class="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-full"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Auth Handlers</span>
+<div class="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-2/3"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Utility Layer</span>
+<div class="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-1/4"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-center text-center">
+<span class="material-symbols-outlined text-primary text-headline-lg mb-2">memory</span>
+<div class="font-display font-semibold text-on-surface">Efficiency Score</div>
+<div class="text-display text-primary mt-2">94%</div>
+<div class="text-label-sm text-on-surface-variant mt-1">Optimized by AI Agent</div>
+</div>
+</div>
+</div>
+<!-- Right Column: AI Assistant & Meta -->
+<div class="lg:col-span-4 space-y-gutter">
+<!-- AI Chat Module -->
+<div class="glass-card rounded-xl h-[450px] flex flex-col overflow-hidden shimmer-border">
+<div class="p-md border-b border-white/5 flex items-center justify-between bg-white/5">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">smart_toy</span>
+<span class="font-display font-bold">Repo Assistant</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+</div>
+<div class="flex-1 p-md space-y-md overflow-y-auto font-body-md">
+<div class="flex gap-sm">
+<div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[16px]">person</span>
+</div>
+<div class="bg-surface-container rounded-xl p-3 text-on-surface-variant text-sm">
+                                    Where is the database connection managed?
+                                </div>
+</div>
+<div class="flex gap-sm flex-row-reverse">
+<div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+</div>
+<div class="glass-card rounded-xl p-3 text-on-surface text-sm border-primary/20">
+                                    The database connection is managed in <span class="text-secondary font-code-md">src/infra/db.ts</span>. It uses a singleton pattern with automated retry logic.
+                                </div>
+</div>
+</div>
+<div class="p-md border-t border-white/5">
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-white/10 rounded-xl px-4 py-3 pr-12 focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Ask about code..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tech Stack Analysis -->
+<div class="glass-card rounded-xl p-md">
+<h3 class="font-display font-semibold mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+                            Infrastructure
+                        </h3>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">javascript</span>
+<span class="text-on-surface font-medium">Express.js</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">PRIMARY ROUTER</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">dataset</span>
+<span class="text-on-surface font-medium">PostgreSQL</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">PERSISTENCE</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">cloud</span>
+<span class="text-on-surface font-medium">Redis</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">CACHING</span>
+</div>
+</div>
+</div>
+<!-- Contributors Card -->
+<div class="glass-card rounded-xl p-md">
+<h3 class="font-display font-semibold mb-md">Active Collaborators</h3>
+<div class="flex -space-x-3 overflow-hidden">
+<img class="inline-block h-10 w-10 rounded-full ring-2 ring-background" data-alt="Avatar of a male developer with glasses working in a dark room, blue screen light reflecting on his face, high-end commercial aesthetic, focused expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAprYF5P0m-sWL8TwOrw3D78bYYgaT_KZJUNCPETG_JDXxpQdWuHtIcdcVvHcji54KOwRloJwMn_2-KyK5jeFIe7HmNms9c9KXPeML6udRH7xWljqKR7mZPpmIfHk5Cp8CPqodujkWgPwnWuyM7MKXYuw4Yn96hMdyiB6NEUfHkQlks0ZpVydvqCD1alDfbeyPERb_ilEiYB7Aib9M-AoDhPw3jaNDbRS9EmsP8XZExC6hr0YP-0EGIb5s0HudPCp0IC0VCEjxtOY4"/>
+<img class="inline-block h-10 w-10 rounded-full ring-2 ring-background" data-alt="Avatar of a female lead engineer, minimalist portrait, bright accent lighting, cyberpunk office background with blurred digital displays, confident smile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsAuQ1FRPSZftc0oN4M4_I0AQ_LHtBOQ1TPOCONyRpHeaa_OmBHolBZ0cAHRJrb9mX474kjF9FBgQOCs4xLBmNhmUCU4txvXjf9L_FTpHOvaGuDMweZuM2EoB4vea1Lh2Ukn1EOw0YoE2ZMbR9EtYwjTDhpYKjybok3WALJtCpN1Atvm1XJJ6sNXy84jTnLUz3VE_GUhq73v4rDu1nrpVSt4uyeO8xnlySANk1IcO1Bk0zS7A50CU9T3LObYK3j8C1H4KxFPVpiZg"/>
+<img class="inline-block h-10 w-10 rounded-full ring-2 ring-background" data-alt="Avatar of a young creative technologist, studio lighting, deep indigo background, artistic and professional, high-resolution portrait style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFA5-D8a2JZCSqxwwTQRhbOTCwxSoEJOIBjJ4D3K3hryFgwxRDA_JsDCvEERw2SJaR9Ll3QL5KCuNEJkeun5fImfyeUYnSMkIHMD68_vlWq48sUOBbhDo3OtipNiaFj3Mc6Fs7zDqNCMuwVN37QLuCbxcky7LEDX9yNKVtqaSOPF018sZu8thEglgYbgfced-uTK8wNJ9XbbgJ9eYOi8JOAn7gtfPW3AOgysqWPAJOY7bmLVNBfA1KcRkvoOtUkPKsmI9HsRfU2SY"/>
+<div class="h-10 w-10 rounded-full bg-surface-container-high ring-2 ring-background flex items-center justify-center text-label-sm font-bold text-on-surface">
+                                +12
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Interactive Micro-interactions -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Floating particle effect in the background
+        const canvas = document.createElement('canvas');
+        canvas.className = 'fixed inset-0 -z-10 pointer-events-none opacity-20';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            for(let i=0; i<30; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speedX: Math.random() * 0.5 - 0.25,
+                    speedY: Math.random() * 0.5 - 0.25
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+                ctx.fillStyle = '#c0c1ff';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+        window.onresize = init;
+    </script>
+</body></html>
