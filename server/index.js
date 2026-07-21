@@ -1,37 +1,16 @@
 import 'dotenv/config';
 import crypto from 'node:crypto';
 import express from 'express';
-
-const app = express();
-const port = process.env.PORT || 4000;
-const sessions = new Map();
-const clientId = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-const appUrl = process.env.APP_URL || 'http://localhost:5173';
-app.use(express.json());
-
-app.get('/api/github/status', (_req, res) => res.json({ configured: Boolean(clientId && clientSecret), connected: false, message: clientId && clientSecret ? 'GitHub OAuth is ready to connect.' : 'Add GitHub OAuth credentials to enable connection.' }));
-app.get('/api/github/connect', (_req, res) => {
-  if (!clientId || !clientSecret) return res.status(503).json({ message: 'GitHub OAuth credentials are not configured.' });
-  const state = crypto.randomUUID(); sessions.set(state, { createdAt: Date.now() });
-  const params = new URLSearchParams({ client_id: clientId, redirect_uri: `${appUrl}/api/github/callback`, scope: 'read:user repo', state });
-  res.redirect(`https://github.com/login/oauth/authorize?${params}`);
-});
-app.get('/api/github/callback', async (req, res) => {
-  const session = sessions.get(req.query.state); sessions.delete(req.query.state);
-  if (!session || !req.query.code) return res.redirect(`${appUrl}/settings?github=failed`);
-  try {
-    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ client_id: clientId, client_secret: clientSecret, code: req.query.code }) });
-    const token = (await tokenResponse.json()).access_token; if (!token) throw new Error('No access token');
-    const profileResponse = await fetch('https://api.github.com/user', { headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}`, 'User-Agent': 'Project-Brain' } });
-    const profile = await profileResponse.json(); const id = crypto.randomUUID(); sessions.set(id, { token, profile, createdAt: Date.now() });
-    res.redirect(`${appUrl}/settings?github=connected&session=${id}`);
-  } catch { res.redirect(`${appUrl}/settings?github=failed`); }
-});
-app.get('/api/github/repos', async (req, res) => {
-  const session = sessions.get(req.query.session); if (!session?.token) return res.status(401).json({ message: 'Connect GitHub first.' });
-  const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', { headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${session.token}`, 'User-Agent': 'Project-Brain' } });
-  if (!response.ok) return res.status(response.status).json({ message: 'Unable to read repositories.' });
-  const repos = await response.json(); res.json({ profile: session.profile, repos: repos.map(({ id, full_name, name, private: isPrivate, description, language, updated_at, default_branch }) => ({ id, full_name, name, private: isPrivate, description, language, updated_at, default_branch })) });
-});
-app.listen(port, () => console.log(`Project Brain API running on ${port}`));
+const app=express(),port=process.env.PORT||4000,sessions=new Map(),tasks=[],documents=[];
+const clientId=process.env.GITHUB_CLIENT_ID,clientSecret=process.env.GITHUB_CLIENT_SECRET,appUrl=process.env.APP_URL||'http://localhost:5173';
+app.use(express.json({limit:'1mb'}));
+const groq=async(messages)=>{if(!process.env.GROQ_API_KEY) throw new Error('GROQ_API_KEY is not configured.');const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{Authorization:`Bearer ${process.env.GROQ_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'openai/gpt-oss-120b',reasoning_effort:'medium',messages})});if(!r.ok)throw new Error(`Groq request failed (${r.status})`);const d=await r.json();return d.choices?.[0]?.message?.content||'No response returned.'};
+app.get('/api/health',(_q,res)=>res.json({ok:true,groqConfigured:Boolean(process.env.GROQ_API_KEY),model:'openai/gpt-oss-120b'}));
+app.get('/api/github/status',(_q,res)=>res.json({configured:Boolean(clientId&&clientSecret),connected:false,message:clientId&&clientSecret?'GitHub OAuth is ready to connect.':'Add GitHub OAuth credentials to enable connection.'}));
+app.get('/api/github/connect',(_q,res)=>{if(!clientId||!clientSecret)return res.status(503).json({message:'GitHub OAuth credentials are not configured.'});const state=crypto.randomUUID();sessions.set(state,{});res.redirect(`https://github.com/login/oauth/authorize?${new URLSearchParams({client_id:clientId,redirect_uri:`${appUrl}/api/github/callback`,scope:'read:user repo',state})}`)});
+app.get('/api/github/callback',async(req,res)=>{if(!sessions.has(req.query.state)||!req.query.code)return res.redirect(`${appUrl}/settings?github=failed`);sessions.delete(req.query.state);try{const tokenResult=await fetch('https://github.com/login/oauth/access_token',{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify({client_id:clientId,client_secret:clientSecret,code:req.query.code})});const token=(await tokenResult.json()).access_token;if(!token)throw new Error();const user=await fetch('https://api.github.com/user',{headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${token}`,'User-Agent':'Project-Brain'}}).then(r=>r.json());const id=crypto.randomUUID();sessions.set(id,{token,user});res.redirect(`${appUrl}/settings?github=connected&session=${id}`)}catch{res.redirect(`${appUrl}/settings?github=failed`)}});
+app.get('/api/github/repos',async(req,res)=>{const s=sessions.get(req.query.session);if(!s?.token)return res.status(401).json({message:'Connect GitHub first.'});const r=await fetch('https://api.github.com/user/repos?sort=updated&per_page=100',{headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${s.token}`,'User-Agent':'Project-Brain'}});if(!r.ok)return res.status(r.status).json({message:'Unable to read repositories.'});const repos=await r.json();res.json({profile:s.user,repos:repos.map(({id,full_name,private:isPrivate,description,language,updated_at,default_branch})=>({id,full_name,private:isPrivate,description,language,updated_at,default_branch}))})});
+app.get('/api/tasks',(_q,res)=>res.json({tasks}));app.post('/api/tasks',(req,res)=>{const task={id:crypto.randomUUID(),title:String(req.body.title||'').slice(0,160),status:'in_progress',checkpoint:req.body.checkpoint||'Created',createdAt:new Date().toISOString()};if(!task.title)return res.status(400).json({message:'A task title is required.'});tasks.unshift(task);res.status(201).json({task})});
+app.post('/api/tasks/next-step',async(req,res)=>{try{const suggestion=await groq([{role:'system',content:'You are Project Brain. Give one concise practical next step for this software task.'},{role:'user',content:req.body.context||'A new project task'}]);res.json({suggestion})}catch(e){res.status(503).json({message:e.message})}});
+app.get('/api/documents',(_q,res)=>res.json({documents}));app.post('/api/documents/generate',async(req,res)=>{try{const title=String(req.body.title||'Untitled document').slice(0,120),brief=String(req.body.brief||'').slice(0,6000);const content=await groq([{role:'system',content:'You create concise, professional project documents in Markdown. Use clear headings and do not invent facts.'},{role:'user',content:`Create a document titled "${title}" using this brief:\n${brief}`}]);const document={id:crypto.randomUUID(),title,content,createdAt:new Date().toISOString()};documents.unshift(document);res.status(201).json({document})}catch(e){res.status(503).json({message:e.message})}});
+app.listen(port,()=>console.log(`Project Brain API running on ${port}`));
