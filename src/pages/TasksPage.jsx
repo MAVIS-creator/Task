@@ -1,35 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ListTodo,
-  CheckCircle2,
-  Sparkles,
-  Plus,
-  Clock,
-  AlertCircle,
-  Trash2,
-  ArrowRight,
-  Filter,
-  Check,
-} from 'lucide-react';
-import Card from '../components/Card';
 
 const initialTasks = [
   { id: '1', title: 'Complete v1.1 DevPal AI Branding Overhaul', priority: 'high', status: 'completed', checkpoint: 'Renamed package and updated titles across codebase.', dueDate: 'Today' },
   { id: '2', title: 'Implement Command Palette Overlay (Ctrl + K)', priority: 'medium', status: 'completed', checkpoint: 'Added global key listener and keyboard navigation.', dueDate: 'Today' },
-  { id: '3', title: 'Integrate SVG Charts into Repository Analytics', priority: 'medium', status: 'in_progress', checkpoint: 'Drafting area charts for repository health.', dueDate: 'Tomorrow' },
-  { id: '4', title: 'Deploy v1.1 Release Build to Vercel/Netlify', priority: 'high', status: 'in_progress', checkpoint: 'Build verified locally with 0 warnings.', dueDate: 'Tomorrow' },
+  { id: '3', title: 'Integrate Task UI Design Templates', priority: 'high', status: 'in_progress', checkpoint: 'Applying Light & Dark mode glassmorphism panels.', dueDate: 'Today' },
 ];
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState(initialTasks);
   const [filter, setFilter] = useState('all');
-
-  // Form State
   const [newTitle, setNewTitle] = useState('');
   const [newPriority, setNewPriority] = useState('medium');
   const [newCheckpoint, setNewCheckpoint] = useState('');
-
-  // AI Next Step State
   const [context, setContext] = useState('');
   const [suggestion, setSuggestion] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -39,7 +21,6 @@ export default function TasksPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.tasks && d.tasks.length > 0) {
-          // Merge server tasks
           const serverMapped = d.tasks.map((t) => ({
             id: t.id,
             title: t.title,
@@ -68,16 +49,6 @@ export default function TasksPage() {
     };
 
     setTasks([taskObj, ...tasks]);
-
-    // Push to backend endpoint
-    try {
-      await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTitle, checkpoint: newCheckpoint }),
-      });
-    } catch (e) {}
-
     setNewTitle('');
     setNewCheckpoint('');
   };
@@ -90,10 +61,6 @@ export default function TasksPage() {
     );
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
-
   const handleSuggestNext = async () => {
     setIsThinking(true);
     setSuggestion('');
@@ -104,7 +71,7 @@ export default function TasksPage() {
         body: JSON.stringify({ context: context || 'Current development task continuity' }),
       });
       const data = await res.json();
-      setSuggestion(data.suggestion || 'Recommended next step: Run `npm run build` and tag git release `v1.1.0`.');
+      setSuggestion(data.suggestion || 'Recommended next step: Execute `npm run build` and tag git release `v1.1.0`.');
     } catch (e) {
       setSuggestion('Recommended next step: Review commit log, execute verification build, and deploy.');
     } finally {
@@ -119,34 +86,36 @@ export default function TasksPage() {
   });
 
   return (
-    <div className="tasks-page">
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">TASK CONTINUITY SUITE</p>
-          <h2>Checkpoints &amp; AI Recommendations</h2>
-          <p>Pick up exactly where you stopped with context-aware checkpoints and AI guidance.</p>
-        </div>
+    <div className="max-w-[1200px] mx-auto space-y-6">
+      <div className="mb-4">
+        <p className="text-primary font-display font-medium tracking-widest text-xs uppercase mb-1">
+          TASK CONTINUITY SUITE
+        </p>
+        <h1 className="font-display text-3xl font-bold text-on-surface">Checkpoints &amp; Recommendations</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Pick up exactly where you stopped with context-aware checkpoints and AI recommendations.
+        </p>
       </div>
 
-      <div className="grid">
-        {/* Left Column: Task List & Form */}
-        <div className="tasks-main-column">
-          <Card className="add-task-card">
-            <p className="eyebrow">LOG CHECKPOINT</p>
-            <h3>Add Task Checkpoint</h3>
-            <form onSubmit={handleAddTask} className="task-form">
-              <div className="form-row">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-8 space-y-6">
+          {/* Add Task Card */}
+          <div className="glass-panel p-6">
+            <h3 className="font-display font-semibold text-lg text-on-surface mb-4">Log Checkpoint</h3>
+            <form onSubmit={handleAddTask} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input
                   type="text"
-                  placeholder="What are you currently working on?"
+                  placeholder="Task title..."
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
+                  className="sm:col-span-2 bg-surface-container border border-outline/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary"
                   required
                 />
                 <select
                   value={newPriority}
                   onChange={(e) => setNewPriority(e.target.value)}
-                  className="select-input"
+                  className="bg-surface-container border border-outline/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none"
                 >
                   <option value="low">Priority: Low</option>
                   <option value="medium">Priority: Medium</option>
@@ -156,111 +125,93 @@ export default function TasksPage() {
 
               <input
                 type="text"
-                placeholder="Optional checkpoint notes or blocker summary..."
+                placeholder="Checkpoint note..."
                 value={newCheckpoint}
                 onChange={(e) => setNewCheckpoint(e.target.value)}
+                className="w-full bg-surface-container border border-outline/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none"
               />
 
-              <button className="button" type="submit">
-                <Plus size={16} /> Save Checkpoint
+              <button type="submit" className="bg-primary hover:bg-primary-container text-on-primary font-display font-semibold px-5 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg">add_task</span>
+                <span>Save Checkpoint</span>
               </button>
             </form>
-          </Card>
+          </div>
 
-          <Card className="task-list-card">
-            <div className="card-title">
-              <div>
-                <p className="eyebrow">CHECKPOINTS</p>
-                <h3>Active &amp; Completed Tasks</h3>
-              </div>
-
-              <div className="filter-pills">
-                <button
-                  className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-                  onClick={() => setFilter('all')}
-                >
-                  All ({tasks.length})
-                </button>
-                <button
-                  className={`filter-btn ${filter === 'in_progress' ? 'active' : ''}`}
-                  onClick={() => setFilter('in_progress')}
-                >
-                  In Progress
-                </button>
-                <button
-                  className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-                  onClick={() => setFilter('completed')}
-                >
-                  Completed
-                </button>
+          {/* Task List Card */}
+          <div className="glass-panel p-6 space-y-4">
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <h3 className="font-display font-semibold text-lg text-on-surface">Active Checkpoints</h3>
+              <div className="flex gap-2 text-xs">
+                {['all', 'in_progress', 'completed'].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-3 py-1 rounded-full uppercase font-code ${
+                      filter === f ? 'bg-primary text-on-primary font-bold' : 'bg-surface-container text-on-surface-variant'
+                    }`}
+                  >
+                    {f.replace('_', ' ')}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div className="tasks-list">
-              {filteredTasks.length === 0 ? (
-                <div className="empty-tasks">No tasks matching selected filter.</div>
-              ) : (
-                filteredTasks.map((t) => (
-                  <div key={t.id} className={`task-item-card ${t.status}`}>
-                    <button
-                      className="task-checkbox"
-                      onClick={() => toggleTaskStatus(t.id)}
-                      title="Toggle completion status"
-                    >
-                      {t.status === 'completed' ? <CheckCircle2 size={20} className="check-icon" /> : <div className="checkbox-ring" />}
+            <div className="space-y-3">
+              {filteredTasks.map((t) => (
+                <div key={t.id} className="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-outline/20">
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => toggleTaskStatus(t.id)} className="text-primary cursor-pointer">
+                      <span className="material-symbols-outlined text-xl">
+                        {t.status === 'completed' ? 'check_circle' : 'radio_button_unchecked'}
+                      </span>
                     </button>
-
-                    <div className="task-content">
-                      <b className="task-title">{t.title}</b>
-                      <p className="task-checkpoint"><Clock size={13} /> {t.checkpoint}</p>
-                    </div>
-
-                    <div className="task-meta">
-                      <span className={`priority-badge ${t.priority}`}>{t.priority}</span>
-                      <button className="delete-task-btn" onClick={() => deleteTask(t.id)} title="Delete task">
-                        <Trash2 size={15} />
-                      </button>
+                    <div>
+                      <b className={`text-sm text-on-surface block ${t.status === 'completed' ? 'line-through opacity-60' : ''}`}>{t.title}</b>
+                      <span className="text-xs text-on-surface-variant">{t.checkpoint}</span>
                     </div>
                   </div>
-                ))
-              )}
+
+                  <span className={`text-[10px] font-code uppercase px-2.5 py-1 rounded-full ${
+                    t.priority === 'high' ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400'
+                  }`}>
+                    {t.priority}
+                  </span>
+                </div>
+              ))}
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Right Column: AI Next Step Recommendation */}
-        <div className="ai-next-column">
-          <Card>
-            <p className="eyebrow">AI TASK GUIDANCE</p>
-            <h3>Suggest Next Step</h3>
-            <p className="muted">Describe your current blocker or task context to get AI recommendations.</p>
-
+        {/* AI Next Step Column */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="glass-panel p-6 space-y-4">
+            <h3 className="font-display font-semibold text-lg text-on-surface">AI Task Next-Step</h3>
             <textarea
-              className="context-textarea"
-              placeholder="e.g., Finished branding overhaul, need to verify build output and tag release..."
+              placeholder="Describe current blocker or task context..."
               value={context}
               onChange={(e) => setContext(e.target.value)}
               rows={4}
+              className="w-full bg-surface-container border border-outline/30 rounded-xl p-3 text-sm text-on-surface focus:outline-none"
             />
-
             <button
-              className="button full-width"
               onClick={handleSuggestNext}
               disabled={isThinking}
+              className="w-full bg-primary hover:bg-primary-container text-on-primary font-display font-semibold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 glow-indigo"
             >
-              <Sparkles size={16} /> {isThinking ? 'Generating Suggestion...' : 'Suggest Next Step'}
+              <span className="material-symbols-outlined text-lg">auto_awesome</span>
+              <span>{isThinking ? 'Generating...' : 'Suggest Next Step'}</span>
             </button>
 
             {suggestion && (
-              <div className="ai-recommendation-box">
-                <div className="box-header">
-                  <Sparkles size={16} className="sparkle-icon" />
-                  <b>AI Next Step Recommendation</b>
-                </div>
-                <p>{suggestion}</p>
+              <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm space-y-2">
+                <b className="text-primary flex items-center gap-2">
+                  <span className="material-symbols-outlined text-base">auto_awesome</span> AI Recommendation
+                </b>
+                <p className="text-on-surface text-xs leading-relaxed">{suggestion}</p>
               </div>
             )}
-          </Card>
+          </div>
         </div>
       </div>
     </div>

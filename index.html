@@ -1,18 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DevPal AI | AI Workspace for Developers</title>
     <meta name="description" content="DevPal AI is an AI-powered project intelligence workspace that preserves development context across repositories, task checkpoints, and generated documents." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
     <!-- Fonts from Task UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6063ee",
+              "primary-fixed": "#c0c1ff",
+              "primary-container": "#494bd6",
+              "on-primary": "#ffffff",
+              "surface": "#13131b",
+              "surface-container": "#1f1f27",
+              "surface-container-low": "#171721",
+              "surface-container-lowest": "#0d0d15",
+              "surface-container-high": "#292932",
+              "on-surface": "#e4e1ed",
+              "on-surface-variant": "#908fa0",
+              "secondary": "#03b5d3",
+              "tertiary": "#c6c6cf",
+              "outline": "#464554",
+              "outline-variant": "#34343d"
+            },
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["Inter", "sans-serif"],
+              code: ["JetBrains Mono", "monospace"]
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-[#09090b] text-[#e4e1ed] font-body antialiased selection:bg-primary selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

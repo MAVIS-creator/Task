@@ -1,17 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  Bot,
-  Send,
-  Sparkles,
-  Copy,
-  Check,
-  RefreshCw,
-  Square,
-  User,
-  Terminal,
-  Code2,
-} from 'lucide-react';
-import Card from '../components/Card';
 
 const suggestedPrompts = [
   'Summarize the current repository architecture',
@@ -33,7 +20,6 @@ export default function AssistantPage() {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [copiedId, setCopiedId] = useState(null);
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -60,7 +46,6 @@ export default function AssistantPage() {
     setIsGenerating(true);
 
     try {
-      // Call server endpoint for AI suggestion or groq completion
       const response = await fetch('/api/tasks/next-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,8 +53,9 @@ export default function AssistantPage() {
       });
 
       const data = await response.json();
-      const aiResponseText = data.suggestion || 
-        `Based on DevPal AI memory nodes for query "${queryText}":\n\n\`\`\`javascript\n// DevPal AI Context Resolution\nconst projectContext = {\n  brand: "DevPal AI",\n  version: "1.1.0",\n  health: "98%",\n  memoryNodes: 24\n};\n\`\`\`\n\nAll system checkpoints and code structures are synced with GitHub.`;
+      const aiResponseText =
+        data.suggestion ||
+        `Based on DevPal AI memory nodes for query "${queryText}":\n\nAll system checkpoints, commit hashes, and code structures are fully indexed and verified against your active GitHub repository.`;
 
       const aiMsg = {
         id: (Date.now() + 1).toString(),
@@ -92,128 +78,94 @@ export default function AssistantPage() {
     }
   };
 
-  const handleCopy = (id, text) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  const user = JSON.parse(
-    localStorage.getItem('devpal-ai-user') || localStorage.getItem('project-brain-user') || '{}'
-  );
-
   return (
-    <div className="assistant-page">
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">AI ASSISTANT STUDIO</p>
-          <h2>Context-Aware Copilot</h2>
-          <p>Ask questions grounded in code, memory nodes, task checkpoints, and architecture.</p>
-        </div>
+    <div className="max-w-[1000px] mx-auto space-y-6">
+      <div className="mb-4">
+        <p className="text-primary font-display font-medium tracking-widest text-xs uppercase mb-1">
+          AI ASSISTANT STUDIO
+        </p>
+        <h1 className="font-display text-3xl font-bold text-on-surface">Context-Aware Copilot</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Ask questions grounded in code, memory nodes, task checkpoints, and architecture.
+        </p>
       </div>
 
-      <div className="assistant-container">
-        {/* Chat Window */}
-        <Card className="chat-window-card">
-          <div className="chat-messages-scroll">
-            {messages.map((m) => (
-              <div key={m.id} className={`chat-bubble-row ${m.from}`}>
-                <div className="chat-avatar">
-                  {m.from === 'ai' ? (
-                    <Bot size={18} className="ai-icon" />
-                  ) : (
-                    user.avatar ? (
-                      <img src={user.avatar} alt="User Avatar" />
-                    ) : (
-                      <User size={18} />
-                    )
-                  )}
-                </div>
-
-                <div className="chat-bubble-content">
-                  <div className="chat-bubble-header">
-                    <b>{m.from === 'ai' ? 'DevPal AI' : user.name || 'Developer'}</b>
-                    <small>{m.time}</small>
-                  </div>
-
-                  <div className="chat-message-body">
-                    {m.text.includes('```') ? (
-                      <div className="code-formatted-block">
-                        <div className="code-block-header">
-                          <span><Code2 size={14} /> Code Snippet</span>
-                          <button onClick={() => handleCopy(m.id, m.text)} className="copy-code-btn">
-                            {copiedId === m.id ? <Check size={14} /> : <Copy size={14} />} Copy
-                          </button>
-                        </div>
-                        <pre>{m.text}</pre>
-                      </div>
-                    ) : (
-                      <p>{m.text}</p>
-                    )}
-                  </div>
-                </div>
+      <div className="glass-panel p-6 flex flex-col h-[580px]">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+          {messages.map((m) => (
+            <div key={m.id} className={`flex gap-3 ${m.from === 'user' ? 'flex-row-reverse' : ''}`}>
+              <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary flex-shrink-0">
+                <span className="material-symbols-outlined text-lg">
+                  {m.from === 'ai' ? 'smart_toy' : 'person'}
+                </span>
               </div>
-            ))}
 
-            {isGenerating && (
-              <div className="chat-bubble-row ai loading">
-                <div className="chat-avatar">
-                  <Bot size={18} />
+              <div
+                className={`p-4 rounded-2xl max-w-[80%] text-sm ${
+                  m.from === 'user'
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface-container-low border border-outline/20 text-on-surface'
+                }`}
+              >
+                <div className="flex justify-between items-center gap-4 mb-1 text-[11px] opacity-70">
+                  <b className="font-display">{m.from === 'ai' ? 'DevPal AI' : 'You'}</b>
+                  <span>{m.time}</span>
                 </div>
-                <div className="typing-indicator">
-                  <span />
-                  <span />
-                  <span />
-                  <small>DevPal AI is analyzing context...</small>
-                </div>
+                <p className="leading-relaxed whitespace-pre-wrap">{m.text}</p>
               </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Prompt Suggestions Pills */}
-          <div className="suggested-prompts-bar">
-            <Sparkles size={14} className="sparkle-icon" />
-            <div className="prompt-pills-scroll">
-              {suggestedPrompts.map((prompt) => (
-                <button
-                  key={prompt}
-                  className="prompt-pill"
-                  onClick={() => handleSend(prompt)}
-                  disabled={isGenerating}
-                >
-                  {prompt}
-                </button>
-              ))}
             </div>
-          </div>
+          ))}
 
-          {/* Chat Form Input */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="chat-input-form"
-          >
-            <input
-              type="text"
-              placeholder="Ask DevPal AI about this repository..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
+          {isGenerating && (
+            <div className="flex gap-3 items-center text-xs text-on-surface-variant">
+              <span className="material-symbols-outlined text-primary animate-spin">sync</span>
+              <span>DevPal AI is analyzing context...</span>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* Prompt Pills */}
+        <div className="flex items-center gap-2 pt-3 border-t border-white/10 overflow-x-auto my-3">
+          <span className="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+          {suggestedPrompts.map((p) => (
+            <button
+              key={p}
+              onClick={() => handleSend(p)}
               disabled={isGenerating}
-            />
-            {isGenerating ? (
-              <button type="button" className="button stop-btn" onClick={() => setIsGenerating(false)}>
-                <Square size={16} /> Stop
-              </button>
-            ) : (
-              <button type="submit" className="button" disabled={!input.trim()}>
-                Ask <Send size={15} />
-              </button>
-            )}
-          </form>
-        </Card>
+              className="bg-surface-container hover:bg-surface-container-high border border-outline/20 text-on-surface-variant hover:text-on-surface px-3 py-1 rounded-full text-xs whitespace-nowrap transition-all"
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+
+        {/* Form Input */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="flex gap-3"
+        >
+          <input
+            type="text"
+            placeholder="Ask DevPal AI about this repository..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={isGenerating}
+            className="flex-1 bg-surface-container border border-outline/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary transition-all"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || isGenerating}
+            className="bg-primary hover:bg-primary-container disabled:opacity-50 text-on-primary font-display font-semibold px-6 py-3 rounded-xl text-sm transition-all flex items-center gap-2 glow-indigo"
+          >
+            <span>Ask</span>
+            <span className="material-symbols-outlined text-sm">send</span>
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,281 +1,137 @@
 import React, { useState } from 'react';
-import {
-  BrainCircuit,
-  Plus,
-  Search,
-  Filter,
-  Layers,
-  Milestone,
-  CheckCircle2,
-  Code2,
-  FileCode,
-  Sparkles,
-  X,
-  ArrowRight,
-} from 'lucide-react';
-import Card from '../components/Card';
+import { Link } from 'react-router-dom';
 
 const initialNodes = [
-  {
-    id: 'node-1',
-    title: 'v1.1 DevPal AI Branding Decision',
-    type: 'decision',
-    summary: 'Renamed Project Brain to DevPal AI while preserving internal memory engine name.',
-    author: 'Ifeoyewole',
-    date: '2026-07-22',
-    tags: ['Branding', 'v1.1', 'UI'],
-    details: 'Ensures clear developer-tool positioning (Linear / GitHub aesthetic) while maintaining backwards compatibility.',
-  },
-  {
-    id: 'node-2',
-    title: 'Groq GPT-OSS 120B Integration',
-    type: 'architecture',
-    summary: 'Selected Groq reasoning LLM for task next-steps and Markdown doc drafting.',
-    author: 'MAVIS-creator',
-    date: '2026-07-21',
-    tags: ['AI', 'LLM', 'Groq'],
-    details: 'Configured medium reasoning effort and fallback mechanisms for low latency assistant queries.',
-  },
-  {
-    id: 'node-3',
-    title: 'Command Palette Overlay (Ctrl + K)',
-    type: 'code',
-    summary: 'Added keyboard listener for instant global navigation across repos, tasks, docs, and memory.',
-    author: 'DevPal Agent',
-    date: '2026-07-22',
-    tags: ['UX', 'Keyboard', 'Navigation'],
-    details: 'Implemented modal overlay with focus management, ESC handling, and instant search filter.',
-  },
-  {
-    id: 'node-4',
-    title: 'GitHub OAuth Read-Only Identity Scope',
-    type: 'milestone',
-    summary: 'OAuth exchange flow maps user repos into DevPal intelligence pipeline.',
-    author: 'Ifeoyewole',
-    date: '2026-07-21',
-    tags: ['GitHub', 'OAuth', 'Security'],
-    details: 'Captures access token in server session and provides secure repository metadata endpoints.',
-  },
+  { id: '1', title: 'v1.1 DevPal AI Branding Decision', type: 'decision', summary: 'Renamed Project Brain to DevPal AI while preserving internal memory engine name.', author: 'Ifeoyewole', date: '2026-07-22' },
+  { id: '2', title: 'Groq GPT-OSS 120B Integration', type: 'architecture', summary: 'Selected Groq reasoning LLM for task next-steps and Markdown doc drafting.', author: 'MAVIS-creator', date: '2026-07-21' },
+  { id: '3', title: 'Command Palette Overlay (Ctrl + K)', type: 'code', summary: 'Added keyboard listener for instant global navigation across repos, tasks, docs, and memory.', author: 'DevPal Agent', date: '2026-07-22' },
+  { id: '4', title: 'GitHub OAuth Read-Only Identity Scope', type: 'milestone', summary: 'OAuth exchange flow maps user repos into DevPal intelligence pipeline.', author: 'Ifeoyewole', date: '2026-07-21' },
 ];
 
 export default function BrainPage() {
   const [nodes, setNodes] = useState(initialNodes);
-  const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNode, setSelectedNode] = useState(null);
 
-  // New Node Form State
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [newType, setNewType] = useState('decision');
-  const [newSummary, setNewSummary] = useState('');
-
-  const filteredNodes = nodes.filter((node) => {
-    const matchesType = filterType === 'all' || node.type === filterType;
-    const matchesSearch =
-      node.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      node.summary.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesType && matchesSearch;
-  });
-
-  const handleAddNode = (e) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
-
-    const newNode = {
-      id: `node-${Date.now()}`,
-      title: newTitle,
-      type: newType,
-      summary: newSummary,
-      author: 'You',
-      date: new Date().toISOString().split('T')[0],
-      tags: ['Manual', newType],
-      details: newSummary,
-    };
-
-    setNodes([newNode, ...nodes]);
-    setNewTitle('');
-    setNewSummary('');
-    setShowAddModal(false);
-  };
+  const filteredNodes = nodes.filter((n) =>
+    n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    n.summary.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="brain-page">
-      <div className="page-heading">
+    <div className="max-w-[1200px] mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div>
-          <p className="eyebrow">PROJECT MEMORY ENGINE</p>
-          <h2>Living Knowledge Graph</h2>
-          <p>
-            DevPal AI automatically captures architectural decisions, code milestones, and technical context into a living graph.
+          <p className="text-primary font-display font-medium tracking-widest text-xs uppercase mb-1">
+            PROJECT MEMORY ENGINE
+          </p>
+          <h1 className="font-display text-3xl font-bold text-on-surface">Living Knowledge Graph</h1>
+          <p className="text-on-surface-variant text-sm mt-1">
+            DevPal AI automatically captures architectural choices, code milestones, and technical context into a living graph.
           </p>
         </div>
 
-        <button className="button" onClick={() => setShowAddModal(true)}>
-          <Plus size={17} /> Add Memory Node
-        </button>
-      </div>
-
-      {/* Toolbar & Filters */}
-      <div className="memory-toolbar">
-        <div className="search-box">
-          <Search size={16} />
-          <input
-            type="text"
-            placeholder="Search memory graph..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="filter-pills">
-          {['all', 'decision', 'architecture', 'code', 'milestone'].map((t) => (
-            <button
-              key={t}
-              className={`filter-btn ${filterType === t ? 'active' : ''}`}
-              onClick={() => setFilterType(t)}
-            >
-              {t.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Interactive Visual Graph Canvas */}
-      <Card className="memory-canvas-card">
-        <div className="canvas-header">
-          <p className="eyebrow">GRAPH VISUALIZATION</p>
-          <small className="muted">{filteredNodes.length} active memory nodes in view</small>
-        </div>
-
-        <div className="knowledge-graph-container">
-          {/* Animated Connecting Lines */}
-          <svg className="graph-lines-svg">
-            <line x1="150" y1="80" x2="380" y2="140" stroke="var(--border-color)" strokeWidth="2" strokeDasharray="5 5" />
-            <line x1="380" y1="140" x2="600" y2="90" stroke="var(--border-color)" strokeWidth="2" strokeDasharray="5 5" />
-            <line x1="150" y1="80" x2="250" y2="220" stroke="var(--border-color)" strokeWidth="2" strokeDasharray="5 5" />
-          </svg>
-
-          {/* Interactive Nodes */}
-          <div className="nodes-grid">
-            {filteredNodes.map((node) => {
-              const iconMap = {
-                decision: CheckCircle2,
-                architecture: Layers,
-                code: Code2,
-                milestone: Milestone,
-              };
-              const NodeIcon = iconMap[node.type] || BrainCircuit;
-
-              return (
-                <div
-                  key={node.id}
-                  className={`memory-node-card ${node.type} ${selectedNode?.id === node.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedNode(node)}
-                >
-                  <div className="node-icon-header">
-                    <div className="node-type-badge">
-                      <NodeIcon size={14} />
-                      <span>{node.type}</span>
-                    </div>
-                    <small>{node.date}</small>
-                  </div>
-
-                  <h4>{node.title}</h4>
-                  <p>{node.summary}</p>
-
-                  <div className="node-tags">
-                    {node.tags.map((tag) => (
-                      <span key={tag} className="tag">#{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+        <div className="flex items-center gap-3">
+          <div className="bg-surface-container border border-outline/20 rounded-xl px-4 py-2 flex items-center gap-2 text-sm text-on-surface">
+            <span className="material-symbols-outlined text-primary">search</span>
+            <input
+              type="text"
+              placeholder="Search memory nodes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent border-0 outline-none text-sm text-on-surface w-48"
+            />
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Node Inspection Drawer / Modal */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Memory Nodes List & Graph Canvas */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Interactive Graph Representation */}
+          <div className="glass-panel p-6 relative overflow-hidden min-h-[320px] flex flex-col justify-between">
+            <div className="flex justify-between items-center z-10">
+              <h3 className="font-display font-semibold text-lg text-on-surface">System Knowledge Graph</h3>
+              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-bold font-code">
+                ENGINE OPTIMAL
+              </span>
+            </div>
+
+            {/* Canvas Nodes */}
+            <div className="grid grid-cols-2 gap-4 my-6 relative z-10">
+              {filteredNodes.map((n) => (
+                <div
+                  key={n.id}
+                  onClick={() => setSelectedNode(n)}
+                  className="p-4 rounded-xl bg-surface-container-low border border-outline/30 hover:border-primary cursor-pointer transition-all hover:scale-[1.02]"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-code uppercase text-primary font-semibold flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">adjust</span>
+                      {n.type}
+                    </span>
+                    <span className="text-xs text-on-surface-variant">{n.date}</span>
+                  </div>
+                  <h4 className="font-display font-semibold text-sm text-on-surface mb-1">{n.title}</h4>
+                  <p className="text-xs text-on-surface-variant line-clamp-2">{n.summary}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Health Overlay */}
+            <div className="flex justify-between items-center pt-4 border-t border-white/10 text-xs text-on-surface-variant z-10">
+              <span>Vector Latency: <strong className="text-primary">12ms</strong></span>
+              <span>Semantic Throughput: <strong className="text-secondary">1.2k nodes/s</strong></span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right AI Confidence Panel */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="glass-panel p-6 flex items-center gap-4 border border-primary/20 bg-primary/5">
+            <div className="flex-1">
+              <div className="text-[10px] text-primary font-bold uppercase tracking-widest">AI Confidence Index</div>
+              <div className="text-4xl font-display font-bold text-primary">94%</div>
+            </div>
+            <div className="w-12 h-12 flex items-center justify-center text-primary">
+              <span className="material-symbols-outlined text-3xl">psychology</span>
+            </div>
+          </div>
+
+          <div className="glass-panel p-6 space-y-3">
+            <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-on-surface-variant">
+              Active Memory Engine State
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="font-medium text-on-surface">Groq GPT-OSS 120B Reasoning</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <span className="font-medium text-on-surface">GitHub Commit Indexer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detail Inspector Modal */}
       {selectedNode && (
         <div className="modal-backdrop" onClick={() => setSelectedNode(null)}>
-          <div className="modal-content node-detail-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelectedNode(null)}>
-              <X size={18} />
-            </button>
-
-            <div className="node-detail-header">
-              <span className={`type-tag ${selectedNode.type}`}>{selectedNode.type}</span>
-              <small>Recorded {selectedNode.date} by {selectedNode.author}</small>
-            </div>
-
-            <h2>{selectedNode.title}</h2>
-            <p className="node-detail-summary">{selectedNode.summary}</p>
-
-            <div className="node-detail-section">
-              <b>Architectural Rationale &amp; Context</b>
-              <p>{selectedNode.details}</p>
-            </div>
-
-            <div className="modal-actions">
-              <button className="button" onClick={() => setSelectedNode(null)}>
-                Close Inspector
+          <div className="glass-panel max-w-md w-full p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-code uppercase text-primary font-bold">{selectedNode.type}</span>
+              <button onClick={() => setSelectedNode(null)} className="text-on-surface-variant hover:text-on-surface">
+                <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add Memory Node Modal */}
-      {showAddModal && (
-        <div className="modal-backdrop" onClick={() => setShowAddModal(false)}>
-          <div className="modal-content add-node-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowAddModal(false)}>
-              <X size={18} />
-            </button>
-
-            <h3>Capture Memory Node</h3>
-            <p className="muted">Add a decision, milestone, or architectural note to the project memory graph.</p>
-
-            <form onSubmit={handleAddNode} className="stack">
-              <label>
-                Node Title
-                <input
-                  type="text"
-                  placeholder="e.g. Switched to SVG charts engine"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  required
-                />
-              </label>
-
-              <label>
-                Category Type
-                <select
-                  value={newType}
-                  onChange={(e) => setNewType(e.target.value)}
-                  className="select-input"
-                >
-                  <option value="decision">Decision</option>
-                  <option value="architecture">Architecture</option>
-                  <option value="code">Code</option>
-                  <option value="milestone">Milestone</option>
-                </select>
-              </label>
-
-              <label>
-                Summary &amp; Context
-                <textarea
-                  placeholder="Describe the context or rationale..."
-                  value={newSummary}
-                  onChange={(e) => setNewSummary(e.target.value)}
-                  required
-                />
-              </label>
-
-              <button className="button" type="submit">
-                <Plus size={16} /> Save Memory Node
-              </button>
-            </form>
+            <h2 className="font-display text-xl font-bold text-on-surface">{selectedNode.title}</h2>
+            <p className="text-sm text-on-surface-variant leading-relaxed">{selectedNode.summary}</p>
+            <div className="text-xs text-on-surface-variant pt-2 border-t border-white/10">
+              Recorded on {selectedNode.date} by {selectedNode.author}
+            </div>
           </div>
         </div>
       )}

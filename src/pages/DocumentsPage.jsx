@@ -1,16 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FileText,
-  Sparkles,
-  Copy,
-  Check,
-  Download,
-  BookOpen,
-  FileCode,
-  Layers,
-  ArrowRight,
-} from 'lucide-react';
-import Card from '../components/Card';
 
 const templates = [
   { id: 'readme', title: 'README.md Overview', brief: 'Create a comprehensive README for DevPal AI detailing repository architecture, setup steps, and features.' },
@@ -26,7 +14,6 @@ export default function DocumentsPage() {
   const [output, setOutput] = useState('');
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [exportNotice, setExportNotice] = useState('');
 
   useEffect(() => {
     fetch('/api/documents')
@@ -69,110 +56,87 @@ export default function DocumentsPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePdfExport = () => {
-    setExportNotice('PDF Export Placeholder: Document formatted for print/PDF export.');
-    setTimeout(() => setExportNotice(''), 3000);
-  };
-
   return (
-    <div className="documents-page">
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">DOCUMENT STUDIO</p>
-          <h2>Automated Project Documentation</h2>
-          <p>Generate high-quality Markdown specifications, READMEs, and API documentation from project context.</p>
-        </div>
+    <div className="max-w-[1200px] mx-auto space-y-6">
+      <div className="mb-4">
+        <p className="text-primary font-display font-medium tracking-widest text-xs uppercase mb-1">
+          DOCUMENT STUDIO
+        </p>
+        <h1 className="font-display text-3xl font-bold text-on-surface">Automated Project Documentation</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Generate high-quality Markdown specifications, READMEs, and API documentation from project context.
+        </p>
       </div>
 
-      <div className="grid">
-        {/* Left Column: Templates & Form */}
-        <div className="doc-form-column">
-          <Card>
-            <p className="eyebrow">PRE-BUILT TEMPLATES</p>
-            <h3>Select Document Template</h3>
-            <div className="templates-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5 space-y-6">
+          <div className="glass-panel p-6 space-y-4">
+            <h3 className="font-display font-semibold text-lg text-on-surface">Document Templates</h3>
+            <div className="grid grid-cols-2 gap-2">
               {templates.map((tpl) => (
                 <button
                   key={tpl.id}
-                  className="template-card-btn"
                   onClick={() => handleSelectTemplate(tpl)}
+                  className="p-3 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline/20 text-xs text-left font-medium text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-2"
                 >
-                  <FileText size={16} />
-                  <span>{tpl.title}</span>
+                  <span className="material-symbols-outlined text-base text-primary">description</span>
+                  <span className="truncate">{tpl.title}</span>
                 </button>
               ))}
             </div>
 
-            <form onSubmit={handleGenerate} className="stack mt-4">
-              <label>
-                Document Title
-                <input
-                  type="text"
-                  placeholder="e.g. SYSTEM_DESIGN.md"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </label>
+            <form onSubmit={handleGenerate} className="space-y-3 pt-2">
+              <input
+                type="text"
+                placeholder="Document title..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full bg-surface-container border border-outline/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none"
+                required
+              />
 
-              <label>
-                Brief &amp; Specifications
-                <textarea
-                  placeholder="Describe key requirements or sections..."
-                  value={brief}
-                  onChange={(e) => setBrief(e.target.value)}
-                  rows={4}
-                  required
-                />
-              </label>
+              <textarea
+                placeholder="Brief & specifications..."
+                value={brief}
+                onChange={(e) => setBrief(e.target.value)}
+                rows={4}
+                className="w-full bg-surface-container border border-outline/30 rounded-xl p-3 text-sm text-on-surface focus:outline-none"
+                required
+              />
 
-              <button className="button" disabled={busy} type="submit">
-                <Sparkles size={16} /> {busy ? 'Generating Document...' : 'Generate with AI Studio'}
+              <button
+                type="submit"
+                disabled={busy}
+                className="w-full bg-primary hover:bg-primary-container text-on-primary font-display font-semibold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 glow-indigo"
+              >
+                <span className="material-symbols-outlined text-lg">auto_awesome</span>
+                <span>{busy ? 'Generating Document...' : 'Generate with AI Studio'}</span>
               </button>
             </form>
-          </Card>
-
-          {/* Generated History */}
-          {docs.length > 0 && (
-            <Card className="mt-4">
-              <p className="eyebrow">DOCUMENT HISTORY</p>
-              <h3>Saved Documents</h3>
-              <div className="saved-docs-list">
-                {docs.map((d) => (
-                  <button key={d.id} className="doc-history-item" onClick={() => setOutput(d.content)}>
-                    <FileText size={16} />
-                    <span>{d.title}</span>
-                  </button>
-                ))}
-              </div>
-            </Card>
-          )}
+          </div>
         </div>
 
-        {/* Right Column: Markdown Output Preview */}
-        <Card className="document-preview-card">
-          <div className="card-title">
-            <div>
-              <p className="eyebrow">MARKDOWN OUTPUT</p>
-              <h3>Document Preview</h3>
-            </div>
-
-            <div className="preview-actions">
-              <button className="secondary-button" onClick={handleCopyMarkdown} disabled={!output}>
-                {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? 'Copied' : 'Copy Markdown'}
-              </button>
-              <button className="secondary-button" onClick={handlePdfExport} disabled={!output}>
-                <Download size={14} /> Export PDF
+        <div className="lg:col-span-7 space-y-6">
+          <div className="glass-panel p-6 space-y-4 min-h-[440px] flex flex-col">
+            <div className="flex justify-between items-center">
+              <h3 className="font-display font-semibold text-lg text-on-surface">Markdown Preview</h3>
+              <button
+                onClick={handleCopyMarkdown}
+                disabled={!output}
+                className="bg-surface-container hover:bg-surface-container-high border border-outline/30 text-on-surface font-semibold px-4 py-2 rounded-xl text-xs transition-all flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-sm">{copied ? 'check' : 'content_copy'}</span>
+                <span>{copied ? 'Copied' : 'Copy Markdown'}</span>
               </button>
             </div>
-          </div>
 
-          {exportNotice && <div className="export-notice">{exportNotice}</div>}
-
-          <div className="markdown-output-box">
-            <pre>{output || 'Select a template or fill the brief form to generate your document...'}</pre>
+            <div className="flex-1 bg-[#0a0a0c] border border-white/10 rounded-xl p-4 font-code text-xs text-zinc-300 overflow-y-auto leading-relaxed">
+              <pre className="whitespace-pre-wrap">
+                {output || 'Select a template or fill the brief form to generate your document...'}
+              </pre>
+            </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

@@ -23,18 +23,22 @@ export default function Shell() {
   const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
 
-  // Theme management
+  // Dark/Light Theme management using Task UI class toggles
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('devpal-theme');
-    return saved ? saved === 'dark' : true; // Default to sleek dark mode
+    return saved ? saved === 'dark' : true;
   });
 
   useEffect(() => {
     if (isDark) {
-      document.body.classList.add('dark-theme');
+      document.documentElement.className = 'dark';
+      document.body.classList.add('dark');
+      document.body.classList.remove('light');
       localStorage.setItem('devpal-theme', 'dark');
     } else {
-      document.body.classList.remove('dark-theme');
+      document.documentElement.className = 'light';
+      document.body.classList.add('light');
+      document.body.classList.remove('dark');
       localStorage.setItem('devpal-theme', 'light');
     }
   }, [isDark]);
@@ -51,7 +55,6 @@ export default function Shell() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Fetch current user info
   const user = JSON.parse(
     localStorage.getItem('devpal-ai-user') || localStorage.getItem('project-brain-user') || '{}'
   );
@@ -66,25 +69,23 @@ export default function Shell() {
   };
 
   return (
-    <div className={`app ${isCollapsed ? 'sidebar-collapsed' : ''} ${isDark ? 'dark' : 'light'}`}>
+    <div className={`min-h-screen bg-surface text-on-surface ${isDark ? 'dark' : 'light'}`}>
+      <Header
+        title={title}
+        onOpenCmdPalette={() => setCmdPaletteOpen(true)}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(!isDark)}
+        onOpenLogout={() => setLogoutOpen(true)}
+        user={user}
+      />
+
       <Sidebar
         isCollapsed={isCollapsed}
         onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
       />
 
-      <main className="app-main-content">
-        <Header
-          title={title}
-          onOpenCmdPalette={() => setCmdPaletteOpen(true)}
-          isDark={isDark}
-          onToggleTheme={() => setIsDark(!isDark)}
-          onOpenLogout={() => setLogoutOpen(true)}
-          user={user}
-        />
-
-        <section className="content-container">
-          <Outlet />
-        </section>
+      <main className={`pt-20 pb-12 px-6 md:pr-10 min-h-screen transition-all duration-200 ${isCollapsed ? 'md:pl-24' : 'md:pl-72'}`}>
+        <Outlet />
       </main>
 
       <CommandPalette
