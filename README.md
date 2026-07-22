@@ -1,16 +1,18 @@
-# Project Brain
+# DevPal AI
 
-Project Brain is an AI-powered project intelligence workspace that preserves development context across repositories, task checkpoints, and generated documents.
+DevPal AI is an AI-powered project intelligence workspace that preserves development context across repositories, task checkpoints, knowledge graphs, and generated documents.
 
-## Hackathon MVP
+## Features & Polish (v1.1)
 
-- GitHub OAuth sign-in and repository-read authorization
-- Project overview, repository intelligence, project-memory, and assistant UI
-- TaskPal-inspired task checkpoints with AI next-step guidance
-- Groq-powered document drafting using `openai/gpt-oss-120b`
-- Netlify and Vercel deployment configuration
+- **Branding & UX**: Complete DevPal AI branding, animated logo, command palette (`Ctrl + K`), dark/light developer aesthetic
+- **GitHub OAuth**: Repository-read authorization and live project sync
+- **Project Intelligence**: Repository health, activity timeline, commits, branches, issues, and contributor insights
+- **Project Memory Engine**: Living knowledge graph, decision history, and milestone tracking
+- **AI Copilot**: Groq-powered assistant with markdown rendering, syntax highlighting, and copyable code
+- **Task Continuity**: Checkpoint tracking with AI next-step recommendations
+- **Document Studio**: Automated README, Architecture, API Docs, and Changelog generation
 
-## Quick start
+## Quick Start
 
 ```bash
 cp .env.example .env
@@ -23,8 +25,4 @@ Open `http://localhost:5173`. See [INSTALLATION.md](INSTALLATION.md), [SYSTEM_DE
 
 ## Screenshots
 
-Run the app locally, then capture the landing, login, overview, Tasks, and Documents routes for Devpost. Screenshot automation is documented in [TESTING.md](TESTING.md).
-
-## Status
-
-The MVP keeps task/document state in server memory; durable persistence and repository intelligence ingestion are planned work, not completed claims.
+Run the app locally to capture the dashboard, command palette, repository intelligence, and AI assistant routes. Screenshot automation is documented in [TESTING.md](TESTING.md).

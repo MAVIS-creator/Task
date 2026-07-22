@@ -2,7 +2,7 @@
 
 ## Context
 
-Project Brain is a React workspace with an Express API. GitHub provides identity and repository access. Groq powers task suggestions and document drafts.
+DevPal AI is a React workspace with an Express API. GitHub provides identity and repository access. Groq powers task suggestions and document drafts.
 
 ```mermaid
 flowchart LR
